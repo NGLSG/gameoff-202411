@@ -1,0 +1,12 @@
+﻿Secrets/Library
+Secrets/Logs
+Secrets/Temp
+Secrets/ProjectSettings/ProjectVersion.txt
+
+.idea/
+obj/
+*.vsconfig
+.vs/
+Secrets/UserSettings
+*.user
+Secrets/Build/*

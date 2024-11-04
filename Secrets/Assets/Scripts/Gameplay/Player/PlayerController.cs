@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
     [Serializable]
     public struct Attributes
@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private PlayerControls _playerControls;
     private Coroutine _moveCoroutine;
-    private Camera _mainCamera;
 
     private void OnEnable()
     {
@@ -38,7 +37,6 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _mainCamera = Camera.main;
     }
 
     IEnumerator PlayerInputHandler()
@@ -50,8 +48,6 @@ public class PlayerController : MonoBehaviour
             if (moveVector2 != Vector2.zero)
             {
                 MovePlayer(moveVector2);
-                _mainCamera.transform.DOMove(
-                    new Vector3(transform.position.x, transform.position.y, _mainCamera.transform.position.z), 1f);
             }
 
 

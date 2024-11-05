@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using DG.Tweening; // Import DOTween namespace
+using DG.Tweening;
+using UnityEngine.InputSystem; // Import DOTween namespace
 
 public class CloseOnClickOutside : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class CloseOnClickOutside : MonoBehaviour
             {
                 ShrinkAndClosePhone();
             }
+        }
+
+        if (Keyboard.current.escapeKey.isPressed)
+        {
+            ShrinkAndClosePhone();
         }
     }
 

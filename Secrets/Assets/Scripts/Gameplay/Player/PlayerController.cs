@@ -66,6 +66,14 @@ public class PlayerController : Singleton<PlayerController>
     void Update()
     {
         // 这里可以处理其他逻辑，例如动画等
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            DialogueSystem.Instance.SetLanguage("en");
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            DialogueSystem.Instance.StartDialogueWithPause(Color.cyan, "Start");
+        }
     }
 
     private void OnDisable()

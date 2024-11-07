@@ -8,7 +8,9 @@ using UnityEngine.InputSystem; // Import DOTween namespace
 public class UIEffectHandler : MonoBehaviour
 {
     [SerializeField] private float shrinkDuration = 0.5f;
-    [SerializeField] private Vector3 targetScale = Vector3.zero;
+    [SerializeField] private float showDuration = 0.5f;
+    [SerializeField] private Vector3 ShowTargetScale = Vector3.one;
+    [SerializeField] private Vector3 ShrinkTargetScale = Vector3.zero;
     [SerializeField] private Ease ShowEase = Ease.OutBack;
     [SerializeField] private Ease ShrinkEase = Ease.InBack;
     [SerializeField] private bool CloseOnClickOutside = true;
@@ -71,7 +73,7 @@ public class UIEffectHandler : MonoBehaviour
 
     public void ShrinkAndClosePhone()
     {
-        transform.DOScale(targetScale, shrinkDuration).SetEase(ShrinkEase).OnComplete(() =>
+        transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).OnComplete(() =>
         {
             gameObject.SetActive(false);
         });
@@ -80,6 +82,6 @@ public class UIEffectHandler : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        transform.DOScale(Vector3.one, 0.5f).SetEase(ShowEase);
+        transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase);
     }
 }

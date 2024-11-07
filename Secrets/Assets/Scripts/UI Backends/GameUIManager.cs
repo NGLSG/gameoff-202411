@@ -18,7 +18,9 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private Image ShowingSprite1;
     [SerializeField] private Image ShowingSprite2;
     [SerializeField] private GameObject Phone;
+    [SerializeField] private List<UIEffectHandler> UIsOnPhoneShowShouldClose = new List<UIEffectHandler>();
     [SerializeField] private List<SpriteInfo> SpriteInfos;
+
     private InputManager m_InputManager;
     private Coroutine handle;
     private bool isPaused = false;
@@ -76,6 +78,11 @@ public class GameUIManager : Singleton<GameUIManager>
         {
             if (m_InputManager.IsActionPressed("OpenPhone"))
             {
+                foreach (var ui in UIsOnPhoneShowShouldClose)
+                {
+                    ui.ShrinkAndClosePhone();
+                }
+
                 ShowPhone(true);
             }
 

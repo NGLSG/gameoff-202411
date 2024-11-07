@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(UIEffectHandler))]
+[RequireComponent(typeof(CloseOnClickOutside))]
 public class PhoneController : MonoBehaviour
 {
 

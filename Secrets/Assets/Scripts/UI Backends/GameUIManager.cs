@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -20,10 +19,6 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private GameObject Phone;
     [SerializeField] private List<SpriteInfo> SpriteInfos;
     private InputManager m_InputManager;
-    private Coroutine handle;
-    private bool isPaused = false;
-
-    public bool EscPause = true;
 
     public void ShowSprite(string spriteName, bool show = true, int idxOfImgToShow = 0)
     {
@@ -54,40 +49,20 @@ public class GameUIManager : Singleton<GameUIManager>
         Phone.SetActive(show);
         if (show)
         {
-            Phone.GetComponent<UIEffectHandler>().Show();
+            Phone.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
         }
-    }
-
-    public void TogglePause(bool pause)
-    {
-        Time.timeScale = pause ? 0 : 1;
-        isPaused = pause;
     }
 
     private void Start()
     {
         m_InputManager = InputManager.Instance;
-        handle = StartCoroutine(HandleInput());
     }
 
-    private IEnumerator HandleInput()
+    private void FixedUpdate()
     {
-        while (gameObject)
+        if (m_InputManager.IsActionPressed("OpenPhone"))
         {
-            if (m_InputManager.IsActionPressed("OpenPhone"))
-            {
-                ShowPhone(true);
-            }
-
-            if (Keyboard.current.escapeKey.isPressed)
-            {
-                if (EscPause)
-                {
-                    TogglePause(!isPaused);
-                }
-            }
-
-            yield return null;
+            ShowPhone(true);
         }
     }
 }

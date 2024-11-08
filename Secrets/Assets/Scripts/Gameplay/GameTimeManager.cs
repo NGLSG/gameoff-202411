@@ -74,18 +74,25 @@ public class GameTimeManager : Singleton<GameTimeManager>
     }
 
 
-    [FormerlySerializedAs("CurrentGameTime")] public FactualTime currentFactualTime = new FactualTime();
+    [FormerlySerializedAs("CurrentGameTime")]
+    public FactualTime currentFactualTime = new FactualTime();
 
     [SerializeField] private float EachDayLasts = 300f;
     [SerializeField] private float record = 0f;
     [SerializeField] private Coroutine handle;
     private static float _timeScale;
+    private bool isPaused = false;
 
 
     private void OnEnable()
     {
         _timeScale = 86400 / EachDayLasts;
         StartGameTime();
+    }
+
+    public void StopTime(bool pause)
+    {
+        isPaused = pause;
     }
 
     public void StartGameTime()
@@ -113,7 +120,13 @@ public class GameTimeManager : Singleton<GameTimeManager>
     {
         while (gameObject)
         {
+            while (isPaused)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+
             yield return new WaitForSeconds(0.1f);
+
             record += 0.1f;
             ProcessTime();
             if (record >= EachDayLasts)

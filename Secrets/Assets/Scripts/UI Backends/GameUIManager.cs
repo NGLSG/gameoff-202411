@@ -66,6 +66,7 @@ public class GameUIManager : Singleton<GameUIManager>
     {
         Time.timeScale = pause ? 0 : 1;
         isPaused = pause;
+        GameTimeManager.Instance.StopTime(pause);
     }
 
     private void Start()
@@ -83,7 +84,7 @@ public class GameUIManager : Singleton<GameUIManager>
             {
                 foreach (var ui in UIsOnPhoneShowShouldClose)
                 {
-                    ui.ShrinkAndClosePhone();
+                    ui.ShrinkAndClose();
                 }
 
                 ShowPhone(true);

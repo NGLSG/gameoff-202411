@@ -36,13 +36,13 @@ public class UIEffectHandler : MonoBehaviour
             {
                 if (!IsPointerOverUIObject())
                 {
-                    ShrinkAndClosePhone();
+                    ShrinkAndClose();
                 }
             }
 
             if (Keyboard.current.escapeKey.isPressed)
             {
-                ShrinkAndClosePhone();
+                ShrinkAndClose();
                 GameUIManager.Instance.EscPause = true;
             }
 
@@ -71,9 +71,10 @@ public class UIEffectHandler : MonoBehaviour
         return false;
     }
 
-    public void ShrinkAndClosePhone()
+    public void ShrinkAndClose()
     {
-        transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).OnComplete(() =>
+        GameTimeManager.Instance.StopTime(false);
+        transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).SetUpdate(true).OnComplete(() =>
         {
             gameObject.SetActive(false);
         });
@@ -82,6 +83,6 @@ public class UIEffectHandler : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase);
+        transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase).SetUpdate(true);
     }
 }

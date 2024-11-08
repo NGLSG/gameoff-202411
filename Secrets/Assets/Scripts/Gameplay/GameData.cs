@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class GameData : MonoBehaviour
+public class GameData
 {
-    public int exploreScore; // 探索值
-    public int answerScore; // 任务回复后的积分
+    private int exploreScore; // 探索值
+    private int answerScore; // 任务回复后的积分
+    private int personalityScore;
 
     /// <summary>
     /// 任务积分变化
@@ -24,6 +21,15 @@ public class GameData : MonoBehaviour
     {
         exploreScore += changeAmount;
     }
+    
+    /// <summary>
+    /// 设置个性值
+    /// </summary>
+    /// <returns></returns>
+    public void ChangePersonalityScore(int changeAmount)
+    {
+        personalityScore += changeAmount;
+    }
 
     /// <summary>
     /// 返回探索值
@@ -41,5 +47,16 @@ public class GameData : MonoBehaviour
     public int GetAnswerScore()
     {
         return answerScore;
+    }
+    
+
+
+    /// <summary>
+    /// 返回个性值积分
+    /// </summary>
+    /// <returns></returns>
+    public int GetPersonalityScore()
+    {
+        return personalityScore;
     }
 }

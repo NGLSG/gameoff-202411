@@ -15,14 +15,22 @@ public class DialogueSystem : MonoBehaviour
     }
 
     public DialogueRunner dialogueRunner;
-    public Image characterPaint;
+    public Image CharacterBodyImage;
+    public Image CharacterArmImage;
+    public Image CharacterHairImage;
 
-    public void StartDialogueWithPause(Color characterName, string dialogueName)
+    private Coroutine dialogueCoroutine;
+
+    public void StartDialogueWithPause(string characterHair, string characterBody, string characterArm, string dialogueName)
     {
         //TODO: Set characterPaint as the paint we want
-        characterPaint.color = characterName;
+        ApplyBodyConfig(characterHair, characterBody, characterArm);
         
         //Start dialogue
+        if (dialogueRunner.IsDialogueRunning)
+        {
+            dialogueRunner.Stop();
+        }
         dialogueRunner.StartDialogue(dialogueName);
     }
 
@@ -30,5 +38,32 @@ public class DialogueSystem : MonoBehaviour
     {
         AudioLineProvider textAudioLanguage = dialogueRunner.GetComponent<AudioLineProvider>();
         textAudioLanguage.textLanguageCode = languageCode;
+    }
+
+    public void StopDialogue()
+    {
+        if (dialogueRunner.IsDialogueRunning)
+        {
+            dialogueRunner.Stop();
+        }
+    }
+
+    public bool IsDialogueRunning()
+    {
+        return dialogueRunner.IsDialogueRunning;
+    }
+    
+    // Apply body, arm, and hair configuration to NPC
+    private void ApplyBodyConfig(string characterHair, string characterBody, string characterArm)
+    {
+        // Assign the body, arm, and hair by loading from resources or directly applying sprites
+        CharacterBodyImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Body/{characterBody}");
+        CharacterArmImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Arm/{characterArm}");
+        CharacterHairImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Hair/{characterHair}");
+    }
+
+    public void ResetPlayerChattingState()
+    {
+        PlayerController.Instance.SetChattingState(false);
     }
 }

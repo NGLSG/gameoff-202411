@@ -17,6 +17,9 @@ public class PlayerController : Singleton<PlayerController>
     private Rigidbody2D _rigidbody2D;
     private PlayerControls _playerControls;
     private Coroutine _moveCoroutine;
+    
+    // 玩家状态变量
+    private bool isChatting;
 
     private void OnEnable()
     {
@@ -37,6 +40,12 @@ public class PlayerController : Singleton<PlayerController>
     void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start()
+    {
+        // 设置玩家正在聊天的状态为false
+        isChatting = false;
     }
 
     IEnumerator PlayerInputHandler()
@@ -66,18 +75,28 @@ public class PlayerController : Singleton<PlayerController>
     void Update()
     {
         // 这里可以处理其他逻辑，例如动画等
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             DialogueSystem.Instance.SetLanguage("en");
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            DialogueSystem.Instance.StartDialogueWithPause(Color.cyan, "Start");
+            DialogueSystem.Instance.StartDialogueWithPause(" ", " ", " ", "Start");
         }
     }
 
     private void OnDisable()
     {
         _playerControls.Disable();
+    }
+
+    public bool IsChatting()
+    {
+        return isChatting;
+    }
+
+    public void SetChattingState(bool newState)
+    {
+        isChatting = newState;
     }
 }

@@ -20,8 +20,26 @@ public class GameData : MonoBehaviour
     /// 探索值变化
     /// </summary>
     /// <param name="changeAmount">探索值积分变化量</param>
-    public void ChangeSearchScore(int changeAmount)
+    public void ChangeExploreScore(int changeAmount)
     {
         exploreScore += changeAmount;
+    }
+
+    /// <summary>
+    /// 返回探索值
+    /// </summary>
+    /// <returns></returns>
+    public int GetExploreScore()
+    {
+        return exploreScore;
+    }
+
+    /// <summary>
+    /// 返回游戏回答积分
+    /// </summary>
+    /// <returns></returns>
+    public int GetAnswerScore()
+    {
+        return answerScore;
     }
 }

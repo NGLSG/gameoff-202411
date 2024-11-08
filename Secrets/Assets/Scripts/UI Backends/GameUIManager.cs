@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private GameObject Phone;
     [SerializeField] private List<UIEffectHandler> UIsOnPhoneShowShouldClose = new List<UIEffectHandler>();
     [SerializeField] private List<SpriteInfo> SpriteInfos;
+    [SerializeField] private TextMeshProUGUI TimeText;
 
     private InputManager m_InputManager;
     private Coroutine handle;
@@ -69,13 +71,14 @@ public class GameUIManager : Singleton<GameUIManager>
     private void Start()
     {
         m_InputManager = InputManager.Instance;
-        handle = StartCoroutine(HandleInput());
+        handle = StartCoroutine(UpdateBackend());
     }
 
-    private IEnumerator HandleInput()
+    private IEnumerator UpdateBackend()
     {
         while (gameObject)
         {
+            TimeText.text = GameTimeManager.Instance.currentFactualTime.GetTime2();
             if (m_InputManager.IsActionPressed("OpenPhone"))
             {
                 foreach (var ui in UIsOnPhoneShowShouldClose)

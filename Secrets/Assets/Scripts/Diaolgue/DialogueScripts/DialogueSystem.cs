@@ -21,10 +21,10 @@ public class DialogueSystem : MonoBehaviour
 
     private Coroutine dialogueCoroutine;
 
-    public void StartDialogueWithPause(string characterHair, string characterBody, string characterArm, string dialogueName)
+    public void StartDialogueWithPause(string characterName, string dialogueName)
     {
         //TODO: Set characterPaint as the paint we want
-        ApplyBodyConfig(characterHair, characterBody, characterArm);
+        ApplyBodyConfig(characterName);
         
         //Start dialogue
         if (dialogueRunner.IsDialogueRunning)
@@ -53,14 +53,49 @@ public class DialogueSystem : MonoBehaviour
         return dialogueRunner.IsDialogueRunning;
     }
     
-    // Apply body, arm, and hair configuration to NPC
-    private void ApplyBodyConfig(string characterHair, string characterBody, string characterArm)
+// Apply body, arm, and hair configuration to NPC
+    private void ApplyBodyConfig(string characterName)
     {
-        // Assign the body, arm, and hair by loading from resources or directly applying sprites
-        CharacterBodyImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Body/{characterBody}");
-        CharacterArmImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Arm/{characterArm}");
-        CharacterHairImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Hair/{characterHair}");
+        // 获取所有的NPC对象
+        NPC[] npcs = GameObject.FindObjectsOfType<NPC>();
+
+        GameObject npc = null;
+
+        // 遍历所有的NPC对象，找到名字匹配的NPC
+        foreach (var npcComponent in npcs)
+        {
+            if (npcComponent.GetNPCName() == characterName)
+            {
+                npc = npcComponent.gameObject;
+                break; // 找到第一个匹配的NPC，退出循环
+            }
+        }
+
+        if (npc != null)
+        {
+            Dictionary<string, string> characterConfig = npc.GetComponent<NPC>().GetConfigOfNPC();
+            
+            if (characterConfig.ContainsKey("npcBody"))
+            {
+                CharacterBodyImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Body/{characterConfig["npcBody"]}");
+            }
+        
+            if (characterConfig.ContainsKey("npcArm"))
+            {
+                CharacterArmImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Arm/{characterConfig["npcArm"]}");
+            }
+        
+            if (characterConfig.ContainsKey("npcHair"))
+            {
+                CharacterHairImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Hair/{characterConfig["npcHair"]}");
+            }
+        }
+        else
+        {
+            Debug.LogError("NPC not found!");
+        }
     }
+
 
     public void ResetPlayerChattingState()
     {

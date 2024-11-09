@@ -90,24 +90,24 @@ public class NPC : MonoBehaviour
     // 随机选择NPC立绘的身体
     private void GenerateNPCConfig()
     {
-        // Load all assets from Resources folders
-        // string[] bodyAssets = Resources.LoadAll<TextAsset>("NPCArtAssets/Body");
-        // string[] armAssets = Resources.LoadAll<TextAsset>("NPCArtAssets/Arm");
-        // string[] hairAssets = Resources.LoadAll<TextAsset>("NPCArtAssets/Hair");
-        
-        //Randomly pick one file from each folder
-        // body = bodyAssets[Random.Range(0, bodyAssets.Length)].name;
-        // arm = armAssets[Random.Range(0, armAssets.Length)].name;
-        // hair = hairAssets[Random.Range(0, hairAssets.Length)].name;
-        
+        // Load all assets from Resources folders (assumes PNG files in these folders)
+        Sprite[] bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Body");
+        Sprite[] armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Arm");
+        Sprite[] hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Hair");
+
+        // Randomly pick one file from each folder and get its name
+        body = bodyAssets[Random.Range(0, bodyAssets.Length)].name;
+        arm = armAssets[Random.Range(0, armAssets.Length)].name;
+        hair = hairAssets[Random.Range(0, hairAssets.Length)].name;
     }
+
 
     // Handle chatting with NPC
     public void Chatting(string dialogueNode)
     {
         if (!string.IsNullOrEmpty(dialogueNode))
         {
-            DialogueSystem.Instance.StartDialogueWithPause(hair, body, arm, dialogueNode);
+            DialogueSystem.Instance.StartDialogueWithPause(npcName.text, dialogueNode);
         }
     }
 
@@ -122,7 +122,7 @@ public class NPC : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(eavesdroppingNode))
         {
-            DialogueSystem.Instance.StartDialogueWithPause(hair, body, arm, eavesdroppingNode);
+            DialogueSystem.Instance.StartDialogueWithPause(npcName.text, eavesdroppingNode);
         }
     }
 
@@ -134,5 +134,20 @@ public class NPC : MonoBehaviour
         
         // Draw a wireframe sphere to indicate the detection radius
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
+    
+    public Dictionary<string,string> GetConfigOfNPC()
+    {
+        Dictionary<string, string> npcConfig = new Dictionary<string, string>();
+        npcConfig.Add("npcBody", body);
+        npcConfig.Add("npcHair", hair);
+        npcConfig.Add("npcArm", arm);
+
+        return npcConfig;
+    }
+
+    public string GetNPCName()
+    {
+        return npcName.text;
     }
 }

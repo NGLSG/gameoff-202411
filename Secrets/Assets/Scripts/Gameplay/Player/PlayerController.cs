@@ -81,7 +81,7 @@ public class PlayerController : Singleton<PlayerController>
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            DialogueSystem.Instance.StartDialogueWithPause(" ", " ", " ", "Start");
+            DialogueSystem.Instance.StartDialogueWithPause("No.壹号", "Start");
         }
     }
 

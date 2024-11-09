@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class NPC : MonoBehaviour
 {
     [Header("Video Config")] 
-    [SerializeField] private string eavesdroppingNode;
     [SerializeField] private string npcDialogueNode;
+    [SerializeField] private string eavesdroppingNode;
+    [SerializeField] private float eavesdroppingShowGapTime;
 
     [Header("Map Tag Config")] 
     [SerializeField] private SpriteRenderer npcHeadPhoto;
@@ -74,15 +75,14 @@ public class NPC : MonoBehaviour
                 // 如果当前没有正在进行的对话，同时偷听节点不为空（即又偷听内容要展示）
                 if (!DialogueSystem.Instance.IsDialogueRunning() && !string.IsNullOrEmpty(eavesdroppingNode))
                 {
-                    StartEavesDropping(eavesdroppingNode);
+                    StartEavesDropping(eavesdroppingNode, eavesdroppingShowGapTime);
                 }
             }
         }
         else
         {
-            // 当玩家不在NPC身边，关闭显示NPC的界面台词显示,同时停止对白聊天
+            // 当玩家不在NPC身边，关闭显示NPC的界面台词显示
             npcSpeak.gameObject.SetActive(false);
-            StopChatting();
         }
     }
 
@@ -118,11 +118,11 @@ public class NPC : MonoBehaviour
     }
 
     // 开始偷听
-    public void StartEavesDropping(string eavesdroppingNode)
+    public void StartEavesDropping(string eavesdroppingNode, float eavesdroppingGapTime)
     {
         if (!string.IsNullOrEmpty(eavesdroppingNode))
         {
-            DialogueSystem.Instance.StartDialogueWithPause(npcName.text, eavesdroppingNode);
+            DialogueSystem.Instance.StartDialogue(npcName.text, eavesdroppingNode,  eavesdroppingGapTime);
         }
     }
 

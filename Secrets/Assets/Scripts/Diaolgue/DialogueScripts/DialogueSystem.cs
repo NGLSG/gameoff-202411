@@ -15,12 +15,14 @@ public class DialogueSystem : MonoBehaviour
     }
 
     public DialogueRunner dialogueRunner;
+    public LineView lineView;
     public Image CharacterBodyImage;
     public Image CharacterArmImage;
     public Image CharacterHairImage;
 
     private Coroutine dialogueCoroutine;
 
+    // 开启对话
     public void StartDialogueWithPause(string characterName, string dialogueName)
     {
         //TODO: Set characterPaint as the paint we want
@@ -33,13 +35,33 @@ public class DialogueSystem : MonoBehaviour
         }
         dialogueRunner.StartDialogue(dialogueName);
     }
-
-    public void SetLanguage(string languageCode)
+    
+    // 开启偷听
+    public void StartDialogue(string characterName, string dialogueNode, float timeToWait)
     {
-        AudioLineProvider textAudioLanguage = dialogueRunner.GetComponent<AudioLineProvider>();
-        textAudioLanguage.textLanguageCode = languageCode;
+        //TODO: Set characterPaint as the paint we want
+        ApplyBodyConfig(characterName);
+        
+        // 停止之前的协程（如果有的话）
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+        }
+    
+        dialogueRunner.StartDialogue(dialogueNode);
+        dialogueCoroutine = StartCoroutine(AutoAdvance(timeToWait));
     }
 
+    private IEnumerator AutoAdvance(float timeToWait)
+    {
+        while (dialogueRunner.IsDialogueRunning)
+        {
+            yield return new WaitForSeconds(timeToWait);
+            lineView.OnContinueClicked();
+        }
+    }
+
+    // 停止对话
     public void StopDialogue()
     {
         if (dialogueRunner.IsDialogueRunning)
@@ -47,13 +69,21 @@ public class DialogueSystem : MonoBehaviour
             dialogueRunner.Stop();
         }
     }
-
+    
+    // 检测是否有对话正在运行
     public bool IsDialogueRunning()
     {
         return dialogueRunner.IsDialogueRunning;
     }
+
+    // 切换语言
+    public void SetLanguage(string languageCode)
+    {
+        AudioLineProvider textAudioLanguage = dialogueRunner.GetComponent<AudioLineProvider>();
+        textAudioLanguage.textLanguageCode = languageCode;
+    }
     
-// Apply body, arm, and hair configuration to NPC
+    // 根据场景内的玩家信息拼装立绘
     private void ApplyBodyConfig(string characterName)
     {
         // 获取所有的NPC对象
@@ -95,10 +125,17 @@ public class DialogueSystem : MonoBehaviour
             Debug.LogError("NPC not found!");
         }
     }
-
-
+    
     public void ResetPlayerChattingState()
     {
         PlayerController.Instance.SetChattingState(false);
+        Debug.Log("DialogueFinished");
+    }
+    
+    // 重置NPC立绘
+    [YarnCommand("switch_character")]
+    public void SwitchCharacterPaint(string characterName)
+    {
+        ApplyBodyConfig(characterName);
     }
 }

@@ -2,7 +2,7 @@
 
 public class Task : MonoBehaviour
 {
-    private TaskManager.TaskInfo taskInfo;
+    [SerializeField] private TaskManager.TaskInfo taskInfo;
 
     public void SetTaskInfo(TaskManager.TaskInfo task)
     {

@@ -19,19 +19,19 @@ public class TaskOption : MonoBehaviour
         TaskOptionInfo = info;
     }
 
-    public void SelectOption()
+    public void Select()
     {
         switch (TaskOptionInfo.sType)
         {
-            case TaskOptionInfo.AnswerType.Normal:
-            case TaskOptionInfo.AnswerType.Excellent:
-            case TaskOptionInfo.AnswerType.Ordinary:
-                GameManager.Instance.GetGameData().ChangerAnswerScore(TaskOptionInfo.Score);
+            case TaskOptionInfo.OptionType.Normal:
+            case TaskOptionInfo.OptionType.Excellent:
+            case TaskOptionInfo.OptionType.Ordinary:
+                GameManager.Instance.GetGameData().ChangerAnswerScore(TaskOptionInfo.sScore);
                 break;
-            case TaskOptionInfo.AnswerType.Personal:
-                GameManager.Instance.GetGameData().ChangePersonalityScore(TaskOptionInfo.Score);
+            case TaskOptionInfo.OptionType.Personal:
+                GameManager.Instance.GetGameData().ChangePersonalityScore(TaskOptionInfo.sScore);
                 break;
-            case TaskOptionInfo.AnswerType.TrueEnding:
+            case TaskOptionInfo.OptionType.TrueEnding:
                 GameManager.Instance.GetGameData().SetTrueEnding(true);
                 break;
         }
@@ -53,7 +53,7 @@ public class TaskOption : MonoBehaviour
     {
         while (gameObject)
         {
-            OptionText.text = TaskOptionInfo.Content;
+            OptionText.text = TaskOptionInfo.sContent;
             btn.GetComponent<RectTransform>().sizeDelta =
                 new Vector2(Math.Min(OptionText.preferredWidth + 10, ParentRectTransform.sizeDelta.x),
                     OptionText.preferredHeight + 20);

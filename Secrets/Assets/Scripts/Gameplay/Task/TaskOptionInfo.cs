@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 [Serializable]
 public struct TaskOptionInfo
 {
-    public enum AnswerType
+    public enum OptionType
     {
         Ordinary = 0,
         Normal,
@@ -13,9 +14,10 @@ public struct TaskOptionInfo
         TrueEnding
     }
 
-    public AnswerType sType;
-    public int Score;
-    public string Content;
+    public OptionType sType;
+    public int sScore;
+    public string sContent;
+    public bool sUnlocked;
 }
 
 [Serializable]

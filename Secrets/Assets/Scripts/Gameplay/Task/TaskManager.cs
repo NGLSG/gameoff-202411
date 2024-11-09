@@ -12,6 +12,9 @@ public class TaskManager : Singleton<TaskManager>
         public bool IsFinished;
     }
 
+    public Dictionary<int, Dictionary<int, TaskOptionInfo>> TaskOptions =
+        new Dictionary<int, Dictionary<int, TaskOptionInfo>>();
+
     public GameObject TaskPrefab;
     public List<TaskInfo> Tasks = new List<TaskInfo>();
     [SerializeField] private GameObject TaskParent;

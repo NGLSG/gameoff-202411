@@ -1,4 +1,8 @@
-﻿public struct TaskOptionInfo
+﻿using System;
+using System.Collections.Generic;
+
+[Serializable]
+public struct TaskOptionInfo
 {
     public enum AnswerType
     {
@@ -6,10 +10,16 @@
         Normal,
         Personal,
         Excellent,
-        Alien
+        TrueEnding
     }
 
     public AnswerType sType;
-    public string sText;
     public int Score;
+    public string Content;
+}
+
+[Serializable]
+public class TaskOptionStorageInfo
+{
+    public List<TaskOptionInfo> TaskOptions = new List<TaskOptionInfo>();
 }

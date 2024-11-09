@@ -3,6 +3,7 @@ public class GameData
     private int exploreScore; // 探索值
     private int answerScore; // 任务回复后的积分
     private int personalityScore;
+    private bool TrueEnding; // 是否达到真结局
 
     /// <summary>
     /// 任务积分变化
@@ -13,6 +14,11 @@ public class GameData
         answerScore += changeAmount;
     }
 
+    public void SetTrueEnding(bool isTrueEnding)
+    {
+        TrueEnding = isTrueEnding;
+    }
+
     /// <summary>
     /// 探索值变化
     /// </summary>
@@ -21,7 +27,7 @@ public class GameData
     {
         exploreScore += changeAmount;
     }
-    
+
     /// <summary>
     /// 设置个性值
     /// </summary>
@@ -40,6 +46,11 @@ public class GameData
         return exploreScore;
     }
 
+    public bool GetTrueEnding()
+    {
+        return TrueEnding;
+    }
+
     /// <summary>
     /// 返回游戏回答积分
     /// </summary>
@@ -48,7 +59,6 @@ public class GameData
     {
         return answerScore;
     }
-    
 
 
     /// <summary>

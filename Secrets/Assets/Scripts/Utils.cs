@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using UnityEngine;
 
 public static class Utils
 {
@@ -13,5 +14,13 @@ public static class Utils
         }
 
         return m_StringBuilder.ToString();
+    }
+
+    public static void RemoveAllChildren(Transform parent)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Object.Destroy(parent.GetChild(i).gameObject);
+        }
     }
 }

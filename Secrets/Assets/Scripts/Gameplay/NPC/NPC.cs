@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class NPC : MonoBehaviour
 {
     [Header("Video Config")] 
-    [SerializeField] private string npcDialogueNode;
-    [SerializeField] private string eavesdroppingNode;
-    [SerializeField] private float eavesdroppingShowGapTime;
+    public string npcDialogueNode;
+    public string eavesdroppingNode;
+    public float eavesdroppingShowGapTime;
 
     [Header("Map Tag Config")] 
     [SerializeField] private SpriteRenderer npcHeadPhoto;
@@ -40,43 +40,35 @@ public class NPC : MonoBehaviour
         DetectPlayerInRadius();
     }
 
-    // 检测小圈内玩家
+// 检测小圈内玩家
     private void DetectPlayerInRadius()
     {
         // Physics2D.OverlapCircle检测小圈内是否有玩家
         Collider2D playerCollider = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
+    
         if (playerCollider != null) // 检测到玩家
         {
-            Debug.Log("Something is comming, will it be Player?");
-            // Perform raycast from NPC to player to check for obstructions
+            //Debug.Log("Something is comming, will it be Player?");
+        
+            // 检测两者之间是否存在碰撞体
             Vector2 direction = playerCollider.transform.position - transform.position;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, detectionRadius);
 
-            // Ignore hits with NPC's own collider
-            if (hit.collider != null && hit.collider.CompareTag("Player") && hit.collider.gameObject != gameObject)
+            // 设置LayerMask忽略自己的碰撞体
+            int layerMask = ~(1 << gameObject.layer); // 忽略当前物体所在的Layer
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, detectionRadius, layerMask);
+
+            // 如果射线碰撞到的不是玩家自身
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                Debug.Log("Oh!,it is Player!");
-                if (Input.GetKeyDown(KeyCode.E) && !DialogueSystem.Instance.IsDialogueRunning())
-                {
-                    Chatting(npcDialogueNode);
-                    
-                    // 修改玩家为正在对话状态
-                    PlayerController.Instance.SetChattingState(true);
-                }
-
-                if (!PlayerController.Instance.IsChatting())
+                if (!PlayerController.Instance.IsChatting()) // 如果玩家没有在聊天
                 {
                     npcSpeak.gameObject.SetActive(true);
-                    StopChatting();
                 }
             }
             else
             {
-                // 如果当前没有正在进行的对话，同时偷听节点不为空（即又偷听内容要展示）
-                if (!DialogueSystem.Instance.IsDialogueRunning() && !string.IsNullOrEmpty(eavesdroppingNode))
-                {
-                    StartEavesDropping(eavesdroppingNode, eavesdroppingShowGapTime);
-                }
+                npcSpeak.gameObject.SetActive(false);
             }
         }
         else
@@ -86,7 +78,7 @@ public class NPC : MonoBehaviour
         }
     }
 
-
+    
     // 随机选择NPC立绘的身体
     private void GenerateNPCConfig()
     {
@@ -99,31 +91,6 @@ public class NPC : MonoBehaviour
         body = bodyAssets[Random.Range(0, bodyAssets.Length)].name;
         arm = armAssets[Random.Range(0, armAssets.Length)].name;
         hair = hairAssets[Random.Range(0, hairAssets.Length)].name;
-    }
-
-
-    // Handle chatting with NPC
-    public void Chatting(string dialogueNode)
-    {
-        if (!string.IsNullOrEmpty(dialogueNode))
-        {
-            DialogueSystem.Instance.StartDialogueWithPause(npcName.text, dialogueNode);
-        }
-    }
-
-    // 停止对话
-    public void StopChatting()
-    {
-        DialogueSystem.Instance.StopDialogue();
-    }
-
-    // 开始偷听
-    public void StartEavesDropping(string eavesdroppingNode, float eavesdroppingGapTime)
-    {
-        if (!string.IsNullOrEmpty(eavesdroppingNode))
-        {
-            DialogueSystem.Instance.StartDialogue(npcName.text, eavesdroppingNode,  eavesdroppingGapTime);
-        }
     }
 
     // Draw Gizmos for detecting radius (only in the Scene view)

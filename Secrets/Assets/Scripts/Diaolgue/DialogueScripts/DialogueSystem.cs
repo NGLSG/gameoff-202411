@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Yarn.Unity;
+using System.IO;
 
 public class DialogueSystem : MonoBehaviour
 {
@@ -15,12 +16,28 @@ public class DialogueSystem : MonoBehaviour
     }
 
     public DialogueRunner dialogueRunner;
-    public LineView lineView;
+    public CustomLineView lineView;
     public Image CharacterBodyImage;
     public Image CharacterArmImage;
     public Image CharacterHairImage;
 
     private Coroutine dialogueCoroutine;
+    
+    // 存储线索
+    [Serializable]
+    public class ClueData
+    {
+        public string title;
+        public string cluesType;
+        public List<string> content;
+
+        public ClueData(string title, string cluesType ,List<string> content)
+        {
+            this.title = title;
+            this.cluesType = cluesType;
+            this.content = content;
+        }
+    }
 
     // 开启对话
     public void StartDialogueWithPause(string characterName, string dialogueName)
@@ -137,5 +154,33 @@ public class DialogueSystem : MonoBehaviour
     public void SwitchCharacterPaint(string characterName)
     {
         ApplyBodyConfig(characterName);
+    }
+    
+    // 输出Json线索
+    [YarnCommand("save_clues")]
+    public void SaveCluesToJson(string title, string dialogueType)
+    {
+        // 创建ClueData对象
+        ClueData clueData = new ClueData(title, dialogueType, lineView.GetClues());
+        
+        // 将ClueData对象转换为JSON字符串
+        string json = JsonUtility.ToJson(clueData, true);
+
+        // 设置文件保存路径
+        string filePath = Path.Combine(Application.dataPath, "Resources/Clues", $"{title}.json");
+
+        // 创建文件夹（如果不存在）
+        string directoryPath = Path.GetDirectoryName(filePath);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        // 保存JSON到文件
+        File.WriteAllText(filePath, json);
+
+        Debug.Log($"Clues saved to {filePath}");
+        
+        lineView.InitClues();
     }
 }

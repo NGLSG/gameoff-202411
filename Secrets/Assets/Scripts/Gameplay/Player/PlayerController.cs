@@ -98,6 +98,14 @@ public class PlayerController : Singleton<PlayerController>
         {
             DialogueSystem.Instance.StartDialogueWithPause("No.壹号", "Start");
         }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            DialogueSystem.ClueData[] clueDatas = DialogueSystem.Instance.LoadAllCluesFromJson();
+            foreach (var item in clueDatas)
+            {
+                Debug.Log(item.title);
+            }
+        }
 
         SenseNPC();
     }

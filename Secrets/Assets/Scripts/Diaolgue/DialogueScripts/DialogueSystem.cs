@@ -23,19 +23,33 @@ public class DialogueSystem : MonoBehaviour
 
     private Coroutine dialogueCoroutine;
     
-    // 存储线索
+    // 数据存储类
     [Serializable]
     public class ClueData
     {
         public string title;
         public string cluesType;
-        public List<string> content;
+        public List<ClueContent> content;
 
-        public ClueData(string title, string cluesType ,List<string> content)
+        public ClueData(string title, string cluesType, List<ClueContent> content)
         {
             this.title = title;
             this.cluesType = cluesType;
             this.content = content;
+        }
+    }
+
+    // 数据项存储类
+    [Serializable]
+    public class ClueContent
+    {
+        public string Speaker;
+        public string Text;
+
+        public ClueContent(string speaker, string text)
+        {
+            Speaker = speaker;
+            Text = text;
         }
     }
 
@@ -160,9 +174,20 @@ public class DialogueSystem : MonoBehaviour
     [YarnCommand("save_clues")]
     public void SaveCluesToJson(string title, string dialogueType)
     {
+        // 获取Clues数据并转换为List<ClueContent>
+        List<ClueContent> cluesContent = new List<ClueContent>();
+        foreach (string clue in lineView.GetClues())
+        {
+            string[] parts = clue.Split(':'); // 调整格式为 "Speaker : Text"
+            if (parts.Length == 2)
+            {
+                cluesContent.Add(new ClueContent(parts[0].Trim(), parts[1].Trim()));
+            }
+        }
+
         // 创建ClueData对象
-        ClueData clueData = new ClueData(title, dialogueType, lineView.GetClues());
-        
+        ClueData clueData = new ClueData(title, dialogueType, cluesContent);
+
         // 将ClueData对象转换为JSON字符串
         string json = JsonUtility.ToJson(clueData, true);
 
@@ -180,7 +205,44 @@ public class DialogueSystem : MonoBehaviour
         File.WriteAllText(filePath, json);
 
         Debug.Log($"Clues saved to {filePath}");
-        
+
+        // 清空clues列表
         lineView.InitClues();
     }
+
+    
+// 读取所有的Json
+    public ClueData[] LoadAllCluesFromJson()
+    {
+        // Clues 文件夹路径
+        string folderPath = Path.Combine(Application.dataPath, "Resources/Clues");
+
+        // 获取文件夹下所有 JSON 文件路径
+        string[] files = Directory.GetFiles(folderPath, "*.json");
+
+        // 用于存储所有 ClueData 的列表
+        List<ClueData> cluesList = new List<ClueData>();
+
+        // 遍历每个文件并加载数据
+        foreach (string filePath in files)
+        {
+            string json = File.ReadAllText(filePath);
+            ClueData clueData = JsonUtility.FromJson<ClueData>(json);
+
+            if (clueData != null)
+            {
+                cluesList.Add(clueData);
+                Debug.Log($"Loaded clues from {filePath}");
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to load clues from {filePath}");
+            }
+        }
+
+        // 将列表转换为数组并返回
+        return cluesList.ToArray();
+    }
+
+
 }

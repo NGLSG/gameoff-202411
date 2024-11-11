@@ -17,6 +17,8 @@ public class UISetting : Singleton<UISetting>
     {
         BGMs = BGMParent.GetComponentsInChildren<AudioSource>();
         Sounds = SoundParent.GetComponentsInChildren<AudioSource>();
+        BGMCheckbox.isOn = GameSetting.Setting.BGMOn;
+        SoundCheckbox.isOn = GameSetting.Setting.GameSoundOn;
         BGMCheckbox.OnChange.Add(OnBGMToggle);
         SoundCheckbox.OnChange.Add(OnSoundToggle);
         foreach (var bgm in BGMs)

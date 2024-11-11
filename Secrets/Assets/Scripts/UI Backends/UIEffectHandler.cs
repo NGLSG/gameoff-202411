@@ -32,7 +32,8 @@ public class UIEffectHandler : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.1f);
         while (gameObject)
         {
-            GameUIManager.Instance.EscPause = false;
+            if (GameUIManager.Instance != null)
+                GameUIManager.Instance.EscPause = false;
             if (Mouse.current.leftButton.isPressed && CloseOnClickOutside)
             {
                 if (!IsPointerOverUIObject())
@@ -73,7 +74,8 @@ public class UIEffectHandler : MonoBehaviour
 
     public void ShrinkAndClose()
     {
-        GameUIManager.Instance.TogglePause(false);
+        if (GameUIManager.Instance != null)
+            GameUIManager.Instance.TogglePause(false);
         transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).SetUpdate(true).OnComplete(() =>
         {
             gameObject.SetActive(false);
@@ -84,7 +86,8 @@ public class UIEffectHandler : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        GameUIManager.Instance.TogglePause(true);
+        if (GameUIManager.Instance != null)
+            GameUIManager.Instance.TogglePause(true);
         transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase).SetUpdate(true);
     }
 }

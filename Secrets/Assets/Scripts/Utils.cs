@@ -20,6 +20,9 @@ public static class Utils
     {
         for (int i = parent.childCount - 1; i >= 0; i--)
         {
+#if UNITY_EDITOR
+            Debug.Log("Destroying " + parent.GetChild(i).gameObject.name);
+#endif
             Object.Destroy(parent.GetChild(i).gameObject);
         }
     }

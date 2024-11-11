@@ -12,6 +12,7 @@ public class ChatContent : MonoBehaviour
     public Image Avatar;
     public DialogueInfo DialogueInfo;
     public RectTransform MaxRect;
+    [SerializeField] private bool NeedAnim = true;
     private Coroutine handle;
     [SerializeField] private PreloadAnim preloadAnim;
 
@@ -22,7 +23,8 @@ public class ChatContent : MonoBehaviour
             StopCoroutine(handle);
         }
 
-        PlayShowAnim();
+        if (NeedAnim)
+            PlayShowAnim();
         MaxRect = transform.parent.GetComponent<RectTransform>();
         handle = StartCoroutine(Handler());
     }

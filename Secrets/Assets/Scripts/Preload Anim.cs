@@ -39,7 +39,7 @@ public class PreloadAnim : MonoBehaviour
         {
             if (handle2 == null)
                 handle2 = StartCoroutine(PlaySequence());
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSecondsRealtime(0.05f);
             timer += 0.05f;
         }
 
@@ -51,63 +51,27 @@ public class PreloadAnim : MonoBehaviour
     {
         while (!stopPlaying)
         {
-            // 创建一个新的 Sequence 动画链
-            Sequence sequence = DOTween.Sequence();
-
             for (int i = 0; i < Controls.Length; i++)
             {
                 var control = Controls[i].transform;
 
+                // 创建单独的 Sequence 动画链，且每个控件独立
+                Sequence sequence = DOTween.Sequence();
+
                 sequence.Append(control.DOScale(ShrinkTargetScale, 0.1f)
-                    .SetEase(ShrinkEase).SetUpdate(true));
+                    .SetEase(ShrinkEase)
+                    .SetUpdate(true));
 
-
-                if (i < Controls.Length - 1) // 避免在最后一个控件后添加延迟
-                {
-                    sequence.AppendInterval(0.25f / 2);
-                }
-
+                sequence.AppendInterval(0.125f); // 延迟一部分时间
 
                 sequence.Append(control.DOScale(EnlargeTargetScale, 0.1f)
-                    .SetEase(ShowEase).SetUpdate(true));
+                    .SetEase(ShowEase)
+                    .SetUpdate(true));
+
+                // 开始播放序列，避免重叠干扰
+                sequence.Play().SetUpdate(true);
+                yield return sequence.WaitForCompletion();
             }
-
-            // 等待当前 sequence 动画播放完毕
-            yield return sequence.WaitForCompletion();
         }
-    }
-
-
-
-    IEnumerator ScaleRecursively(int BeginIdx)
-    {
-        if (stopPlaying)
-        {
-            yield break;
-        }
-
-        try
-        {
-            var control = Controls[BeginIdx].transform;
-            control.DOScale(ShrinkTargetScale, 0.05f).SetEase(ShrinkEase).SetUpdate(true).OnComplete(() =>
-            {
-                StartCoroutine(ScaleTransform(control, EnlargeTargetScale, 0.05f, ShowEase,
-                    () => { StartCoroutine(ScaleTransform(control, Vector3.one, 0.05f, ShowEase)); }));
-                StartCoroutine(ScaleRecursively(++BeginIdx));
-            });
-        }
-        catch
-        {
-            yield break;
-        }
-
-        yield return null;
-    }
-
-    IEnumerator ScaleTransform(Transform control, Vector3 targetScale, float duration, Ease ease,
-        TweenCallback action = null)
-    {
-        control.DOScale(targetScale, duration).SetEase(ease).SetUpdate(true).OnComplete(() => { action?.Invoke(); });
-        yield return null;
     }
 }

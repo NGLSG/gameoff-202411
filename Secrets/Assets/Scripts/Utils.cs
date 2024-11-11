@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public static class Utils
@@ -25,5 +26,14 @@ public static class Utils
 #endif
             Object.Destroy(parent.GetChild(i).gameObject);
         }
+    }
+
+    public static void Exit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+Application.Quit();
+#endif
     }
 }

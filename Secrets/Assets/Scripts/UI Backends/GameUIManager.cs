@@ -22,12 +22,32 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private List<UIEffectHandler> UIsOnPhoneShowShouldClose = new List<UIEffectHandler>();
     [SerializeField] private List<SpriteInfo> SpriteInfos;
     [SerializeField] private TextMeshProUGUI TimeText;
+    [SerializeField] private GameObject Setting;
 
     private InputManager m_InputManager;
     private Coroutine handle;
     private bool isPaused = false;
 
-    public bool EscPause = true;
+    private volatile bool escPause = true;
+    private readonly object lockObject = new object();
+
+    public bool EscPause
+    {
+        get
+        {
+            lock (lockObject)
+            {
+                return escPause;
+            }
+        }
+        set
+        {
+            lock (lockObject)
+            {
+                escPause = value;
+            }
+        }
+    }
 
     public void ShowSprite(string spriteName, bool show = true, int idxOfImgToShow = 0)
     {
@@ -90,15 +110,15 @@ public class GameUIManager : Singleton<GameUIManager>
                 ShowPhone(true);
             }
 
-            if (Keyboard.current.escapeKey.isPressed)
+            if (EscPause)
             {
-                if (EscPause)
+                if (Keyboard.current.escapeKey.isPressed)
                 {
-                    TogglePause(!isPaused);
+                    Setting.GetComponent<UIEffectHandler>().Show();
                 }
             }
 
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
     }
 }

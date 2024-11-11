@@ -29,10 +29,11 @@ public class UIEffectHandler : MonoBehaviour
 
     private IEnumerator InputHandle()
     {
+        yield return new WaitForSecondsRealtime(0.1f);
         while (gameObject)
         {
             GameUIManager.Instance.EscPause = false;
-            if (Input.GetMouseButtonDown(0) && CloseOnClickOutside)
+            if (Mouse.current.leftButton.isPressed && CloseOnClickOutside)
             {
                 if (!IsPointerOverUIObject())
                 {
@@ -43,10 +44,9 @@ public class UIEffectHandler : MonoBehaviour
             if (Keyboard.current.escapeKey.isPressed)
             {
                 ShrinkAndClose();
-                GameUIManager.Instance.EscPause = true;
             }
 
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -73,16 +73,18 @@ public class UIEffectHandler : MonoBehaviour
 
     public void ShrinkAndClose()
     {
-        GameTimeManager.Instance.StopTime(false);
+        GameUIManager.Instance.TogglePause(false);
         transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).SetUpdate(true).OnComplete(() =>
         {
             gameObject.SetActive(false);
+            GameUIManager.Instance.EscPause = true;
         });
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
+        GameUIManager.Instance.TogglePause(true);
         transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase).SetUpdate(true);
     }
 }

@@ -53,12 +53,11 @@ public class ChatContent : MonoBehaviour
         Background.enabled = false;
         while (!preloadAnim.stopPlaying)
         {
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
 
         content.gameObject.SetActive(true);
         Background.enabled = true;
-        yield break;
     }
 
     private IEnumerator Handler()
@@ -72,7 +71,7 @@ public class ChatContent : MonoBehaviour
             var maxHeight = MaxRect.sizeDelta;
             maxHeight.y = Math.Max(content.preferredHeight + 10, 64);
             MaxRect.sizeDelta = maxHeight;
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
     }
 }

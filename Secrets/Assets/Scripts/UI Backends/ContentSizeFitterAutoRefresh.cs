@@ -16,6 +16,7 @@ public class ContentSizeFitterAutoRefresh : MonoBehaviour
         {
             StopCoroutine(handle);
         }
+
         if (IsVertical)
             fitterVerticalLayoutGroup = GetComponent<VerticalLayoutGroup>();
         if (IsHorizontal)
@@ -36,7 +37,8 @@ public class ContentSizeFitterAutoRefresh : MonoBehaviour
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate(fitterHorizontalLayoutGroup.GetComponent<RectTransform>());
             }
-            yield return null;
+
+            yield return new WaitForEndOfFrame();
         }
     }
 }

@@ -121,4 +121,10 @@ public class GameUIManager : Singleton<GameUIManager>
             yield return new WaitForEndOfFrame();
         }
     }
+    
+    // 设置结局页面
+    public void SetEndding(GameData.EnddingState enddingState)
+    {
+        
+    }
 }

@@ -1,9 +1,19 @@
 public class GameData
 {
     private int exploreScore; // 探索值
-    private int answerScore; // 任务回复后的积分
-    private int personalityScore;
+    private int answerScore; // 隐藏任务分数
+    private int personalityScore; // 任务回复后的积分
     private bool TrueEnding; // 是否达到真结局
+    
+    public enum EnddingState
+    {
+        None,
+        LazyEndding,
+        NormalEndding,
+        PersonalityEndding,
+        AlienEndding,
+        PerfectEndding
+    }
 
     /// <summary>
     /// 任务积分变化
@@ -68,5 +78,13 @@ public class GameData
     public int GetPersonalityScore()
     {
         return personalityScore;
+    }
+
+    public void InitGameData()
+    {
+        exploreScore = 0; // 探索值
+        answerScore = 0; // 任务回复后的积分
+        personalityScore = 0;
+        TrueEnding = false; // 是否达到真结局
     }
 }

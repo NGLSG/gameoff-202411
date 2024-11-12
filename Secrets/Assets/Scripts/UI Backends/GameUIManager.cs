@@ -16,6 +16,14 @@ public class GameUIManager : Singleton<GameUIManager>
         public string Name;
     }
 
+    [Serializable]
+    [CreateAssetMenu(fileName = "EndingInfo", menuName = "EndingInfo")]
+    public class EndingInfo : ScriptableObject
+    {
+        public Sprite Sprite;
+        public string Text;
+    }
+
     [SerializeField] private Image ShowingSprite1;
     [SerializeField] private Image ShowingSprite2;
     [SerializeField] private GameObject Phone;
@@ -23,6 +31,10 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private List<SpriteInfo> SpriteInfos;
     [SerializeField] private TextMeshProUGUI TimeText;
     [SerializeField] private GameObject Setting;
+    [SerializeField] private Image GameOverImage;
+    [SerializeField] private TextMeshProUGUI GameOverText;
+    [SerializeField] private EndingInfo[] EnddingInfos = new EndingInfo[5];
+
 
     private InputManager m_InputManager;
     private Coroutine handle;
@@ -121,10 +133,34 @@ public class GameUIManager : Singleton<GameUIManager>
             yield return new WaitForEndOfFrame();
         }
     }
-    
+
     // 设置结局页面
     public void SetEndding(GameData.EnddingState enddingState)
     {
-        
+        switch (enddingState)
+        {
+            case GameData.EnddingState.LazyEndding:
+                GameOverImage.sprite = EnddingInfos[0].Sprite;
+                GameOverText.text = EnddingInfos[0].Text;
+                break;
+            case GameData.EnddingState.NormalEndding:
+                GameOverImage.sprite = EnddingInfos[1].Sprite;
+                GameOverText.text = EnddingInfos[1].Text;
+                break;
+            case GameData.EnddingState.PersonalityEndding:
+                GameOverImage.sprite = EnddingInfos[2].Sprite;
+                GameOverText.text = EnddingInfos[2].Text;
+                break;
+            case GameData.EnddingState.AlienEndding:
+                GameOverImage.sprite = EnddingInfos[3].Sprite;
+                GameOverText.text = EnddingInfos[3].Text;
+                break;
+            case GameData.EnddingState.PerfectEndding:
+                GameOverImage.sprite = EnddingInfos[4].Sprite;
+                GameOverText.text = EnddingInfos[4].Text;
+                break;
+            default:
+                break;
+        }
     }
 }

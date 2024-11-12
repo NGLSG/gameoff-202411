@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Utils
 {
@@ -15,6 +16,12 @@ public static class Utils
         }
 
         return m_StringBuilder.ToString();
+    }
+
+    public static void LoadScene(string sceneName)
+    {
+        LoadingManager.SceneName = sceneName;
+        SceneManager.LoadScene("LoadingScreen");
     }
 
     public static void RemoveAllChildren(Transform parent)

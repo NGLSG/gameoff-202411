@@ -20,12 +20,20 @@ public class GameSetting : Singleton<GameSetting>
 
     void OnLanguageChange(int index)
     {
-        Setting.Language = LanguageDropdown.options[index].text;
-        if (Setting.Language == "English")
+        if (LanguageDropdown.options[index].text == "English")
+        {
+            Setting.Language = "en";
+        }
+        else if (LanguageDropdown.options[index].text == "简体中文")
+        {
+            Setting.Language = "zh-cn";
+        }
+
+        if (Setting.Language == "en")
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[1];
         }
-        else if (Setting.Language == "Chinese")
+        else if (Setting.Language == "zh-cn")
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
         }
@@ -46,5 +54,5 @@ public class Setting
 {
     public bool GameSoundOn = true;
     public bool BGMOn = true;
-    public string Language = "English";
+    public string Language = "en"; //en,zh-cn
 }

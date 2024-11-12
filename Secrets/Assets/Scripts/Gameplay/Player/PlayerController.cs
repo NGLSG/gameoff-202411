@@ -13,7 +13,7 @@ public class PlayerController : Singleton<PlayerController>
         public float RunSpeed;
         public float WalkSpeed;
     }
-    
+
     public enum DialogueType
     {
         Chat,
@@ -24,11 +24,11 @@ public class PlayerController : Singleton<PlayerController>
     private Rigidbody2D _rigidbody2D;
     private PlayerControls _playerControls;
     private Coroutine _moveCoroutine;
-    
+
     // 玩家状态变量
     private bool isChatting;
     private bool isEvasdropping;
-    
+
     // 玩家检测NPC
     [SerializeField] private float detectionRadius = 2f;
     [SerializeField] private LayerMask npcLayer;
@@ -53,6 +53,7 @@ public class PlayerController : Singleton<PlayerController>
     void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
     }
 
     private void Start()
@@ -94,10 +95,12 @@ public class PlayerController : Singleton<PlayerController>
         {
             DialogueSystem.Instance.SetLanguage("en");
         }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             DialogueSystem.Instance.StartDialogueWithPause("No.壹号", "Start");
         }
+
         if (Input.GetKeyDown(KeyCode.O))
         {
             DialogueSystem.ClueData[] clueDatas = DialogueSystem.Instance.LoadAllCluesFromJson();
@@ -136,17 +139,17 @@ public class PlayerController : Singleton<PlayerController>
             {
                 //Debug.Log($"the nearest NPC is {closestNPC.name}");
                 NPC npcScript = closestNPC.GetComponent<NPC>();
-                
+
                 // 检测两者之间是否有其他碰撞体
                 Vector2 direction = closestNPC.transform.position - transform.position;
-                
+
                 // 设置LayerMask忽略自己的碰撞体
                 int layerMask = ~(1 << gameObject.layer); // 忽略当前物体所在的Layer
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, detectionRadius, layerMask);
 
-                
+
                 // 如果没有障碍物直接接触到了NPC
-                if (hit.collider != null  && hit.collider.CompareTag("NPC") )
+                if (hit.collider != null && hit.collider.CompareTag("NPC"))
                 {
                     // 若正在偷听，停止对话
                     if (isEvasdropping)
@@ -154,13 +157,17 @@ public class PlayerController : Singleton<PlayerController>
                         StopDialogue();
                         isEvasdropping = false;
                     }
+
                     DealWithDialogueType(npcScript, DialogueType.Chat);
-                } else {
+                }
+                else
+                {
                     if (isChatting)
                     {
                         StopDialogue();
                         isChatting = false;
                     }
+
                     DealWithDialogueType(npcScript, DialogueType.Eavsdrop);
                 }
             }
@@ -169,7 +176,7 @@ public class PlayerController : Singleton<PlayerController>
         {
             // close note
             noteText.gameObject.SetActive(false);
-            
+
             // stop dialogue
             StopDialogue();
         }
@@ -183,10 +190,10 @@ public class PlayerController : Singleton<PlayerController>
         {
             if (dialogueType == DialogueType.Chat) noteText.text = "Press 'E' to chat.";
             else noteText.text = "Press 'E' to eavesdrop.";
-            
+
             noteText.gameObject.SetActive(true);
         }
-                    
+
         if (npcScript != null) // 确保NPC身上有NPCScript，执行对话
         {
             if (Input.GetKeyDown(KeyCode.E) && !DialogueSystem.Instance.IsDialogueRunning())
@@ -226,16 +233,17 @@ public class PlayerController : Singleton<PlayerController>
     {
         if (!string.IsNullOrEmpty(npc.eavesdroppingNode))
         {
-            DialogueSystem.Instance.StartDialogue(npc.GetNPCName(), npc.eavesdroppingNode,  npc.eavesdroppingShowGapTime);
+            DialogueSystem.Instance.StartDialogue(npc.GetNPCName(), npc.eavesdroppingNode,
+                npc.eavesdroppingShowGapTime);
         }
     }
-    
+
     // 停止对话
     public void StopDialogue()
     {
         DialogueSystem.Instance.StopDialogue();
     }
-    
+
 
     private void OnDisable()
     {
@@ -251,13 +259,13 @@ public class PlayerController : Singleton<PlayerController>
     {
         isChatting = newState;
     }
-    
+
     // Draw Gizmos for detecting radius (only in the Scene view)
     private void OnDrawGizmos()
     {
         // Set the color for the gizmo (e.g., green for detection range)
         Gizmos.color = Color.green;
-        
+
         // Draw a wireframe sphere to indicate the detection radius
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }

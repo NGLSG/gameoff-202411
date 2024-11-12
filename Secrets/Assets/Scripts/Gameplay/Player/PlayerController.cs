@@ -53,7 +53,6 @@ public class PlayerController : Singleton<PlayerController>
     void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
     }
 
     private void Start()
@@ -62,6 +61,7 @@ public class PlayerController : Singleton<PlayerController>
         isChatting = false;
         isEvasdropping = false;
         noteText.gameObject.SetActive(false);
+        DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
     }
 
     IEnumerator PlayerInputHandler()
@@ -247,6 +247,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private void OnDisable()
     {
+        Debug. Log("here");
         _playerControls.Disable();
     }
 

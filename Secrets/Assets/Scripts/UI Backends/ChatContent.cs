@@ -16,7 +16,8 @@ public class ChatContent : MonoBehaviour
     private Coroutine handle;
     [SerializeField] private PreloadAnim preloadAnim;
 
-    void OnEnable()
+
+    void Awake()
     {
         if (handle != null)
         {

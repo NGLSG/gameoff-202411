@@ -33,6 +33,7 @@ public class TaskOption : MonoBehaviour
 
         ParentRectTransform = transform.parent.GetComponent<RectTransform>();
         btn = GetComponent<Button>();
+        btn.onClick.AddListener(Select);
         handle = StartCoroutine(Handler());
     }
 

@@ -10,8 +10,7 @@ public struct TaskOptionInfo
         Ordinary = 0,
         Normal,
         Personal,
-        Excellent,
-        TrueEnding
+        Hidden
     }
 
     public int OptID;

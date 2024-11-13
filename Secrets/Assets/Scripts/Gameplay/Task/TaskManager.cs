@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 public class TaskManager : Singleton<TaskManager>
 {
     [Serializable]
-    public struct TaskInfo
+    public class TaskInfo
     {
         public enum State
         {
@@ -22,8 +22,10 @@ public class TaskManager : Singleton<TaskManager>
         public int OptionID;
     }
 
-    public Dictionary<int, Dictionary<int, TaskOptionInfo>> TaskOptions =
-        new Dictionary<int, Dictionary<int, TaskOptionInfo>>();
+    public Dictionary<int, List<TaskOptionInfo>> TaskOptions =
+        new Dictionary<int, List<TaskOptionInfo>>();
+
+    bool initialized = false;
 
     public Dictionary<int, DialogueStorageInfo> TaskDialogues = new Dictionary<int, DialogueStorageInfo>();
 
@@ -33,8 +35,14 @@ public class TaskManager : Singleton<TaskManager>
 
     private void OnEnable()
     {
-        SaveTempJson();
-        LoadingTasks();
+        if (!initialized)
+        {
+            initialized = true;
+
+            //SaveTempJson();
+            LoadingTasks();
+        }
+
         Utils.RemoveAllChildren(TaskParent.transform);
         foreach (var task in Tasks)
         {
@@ -48,7 +56,7 @@ public class TaskManager : Singleton<TaskManager>
     {
 #if UNITY_EDITOR
         var t = new DialogueStorageInfo();
-        t.DialogueInfos.Add(new DialogueInfo() { TaskID = 1, NPCID = 1, Dialogue = "Hello" });
+        t.DialogueInfos.Add(new DialogueInfo() { Dialogue = "Hello" });
 
         Utils.SaveAsJson(t, Application.dataPath + "/Resources/Tasks/TempDialog.json");
         var t2 = new TaskOptionStorageInfo();
@@ -78,11 +86,11 @@ public class TaskManager : Singleton<TaskManager>
         foreach (var taskInfo in taskInfos)
         {
             if (taskInfo.DialogueInfos.Count == 0) continue;
-            TaskDialogues.Add(taskInfo.DialogueInfos[0].TaskID, taskInfo);
+            TaskDialogues.Add(taskInfo.TaskID, taskInfo);
             if (!isExist)
                 Tasks.Add(new TaskInfo()
                 {
-                    TaskID = taskInfo.DialogueInfos[0].TaskID
+                    TaskID = taskInfo.TaskID
                 });
             foreach (var optInfos in taskOptionInfos)
             {
@@ -90,12 +98,12 @@ public class TaskManager : Singleton<TaskManager>
                 int idx = 0;
                 foreach (var optInfo in optInfos.TaskOptions)
                 {
-                    if (!TaskOptions.ContainsKey(taskInfo.DialogueInfos[0].TaskID))
+                    if (!TaskOptions.ContainsKey(taskInfo.TaskID))
                     {
-                        TaskOptions.Add(taskInfo.DialogueInfos[0].TaskID, new Dictionary<int, TaskOptionInfo>());
+                        TaskOptions.Add(taskInfo.TaskID, new List<TaskOptionInfo>());
                     }
 
-                    TaskOptions[taskInfo.DialogueInfos[0].TaskID].TryAdd(idx, optInfo);
+                    TaskOptions[taskInfo.TaskID].Add(optInfo);
                     idx++;
                 }
             }
@@ -106,21 +114,21 @@ public class TaskManager : Singleton<TaskManager>
     {
         if (TaskOptions.TryGetValue(taskID, out var v1))
         {
-            if (v1.TryGetValue(optionID, out var v2))
+            if (v1.Any(info => info.OptID == optionID))
             {
-                v2.sUnlocked = false;
+                var opt = v1.FirstOrDefault(info => info.OptID == optionID);
+                opt.sUnlocked = true;
             }
         }
     }
 
     public TaskInfo.State GetTaskState(int taskID)
     {
-        return Tasks.FirstOrDefault(x => x.TaskID == taskID).TaskState;
+        return Tasks.FirstOrDefault(x => x.TaskID == taskID)!.TaskState;
     }
 
     public void SetTaskState(int taskID, TaskInfo.State state)
     {
-        var task = Tasks.FirstOrDefault(x => x.TaskID == taskID);
-        task.TaskState = state;
+        Tasks.FirstOrDefault(x => x.TaskID == taskID)!.TaskState = state;
     }
 }

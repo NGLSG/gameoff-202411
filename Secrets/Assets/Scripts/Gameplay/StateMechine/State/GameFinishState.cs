@@ -9,11 +9,18 @@ public class GameFinishState : BaseState
     public override void StateEnter()
     {
         base.StateEnter();
+        
         GameData gameData = GameManager.Instance.GetGameData();
 
-        int normalScore = gameData.GetExploreScore();
+        if (gameData.GetTrueEnding())
+        {
+            GameUIManager.Instance.SetEndding(GameData.EnddingState.AlienEndding);
+            return;
+        }
+        
+        int normalScore = gameData.GetAnswerScore();;
         int personalityScore = gameData.GetPersonalityScore();
-        int perfectScore = gameData.GetAnswerScore();
+        int perfectScore = 0;
         
         int totalScore = normalScore + personalityScore;
 
@@ -21,11 +28,11 @@ public class GameFinishState : BaseState
         {
             GameUIManager.Instance.SetEndding(GameData.EnddingState.LazyEndding);
         }
-        else if (normalScore >= 30 && normalScore <= 60)
+        else if (totalScore >= 30 && totalScore <= 60)
         {
             GameUIManager.Instance.SetEndding(GameData.EnddingState.NormalEndding);
         }
-        else if (personalityScore >= 70 && personalityScore <= 170)
+        else if (totalScore >= 70 && totalScore <= 170)
         {
             GameUIManager.Instance.SetEndding(GameData.EnddingState.PersonalityEndding);
         }

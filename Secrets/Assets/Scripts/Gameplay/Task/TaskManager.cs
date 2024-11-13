@@ -36,7 +36,7 @@ public class TaskManager : Singleton<TaskManager>
         //TODO 从本地存储加载任务信息
     }
 
-    public void UnlockOption(int taskID, int OptionID)
+    public void UnlockOption(int taskID, int optionID)
     {
         //TODO 解锁任务选项
     }

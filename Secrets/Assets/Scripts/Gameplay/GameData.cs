@@ -1,8 +1,9 @@
 public class GameData
 {
     private int exploreScore; // 探索值
-    private int answerScore; // 隐藏任务分数
+    private int answerScore; // 普通任务分数
     private int personalityScore; // 任务回复后的积分
+    private int hideOptionScore; // 隐藏选项分数
     private bool TrueEnding; // 是否达到真结局
     
     public enum EnddingState
@@ -14,72 +15,68 @@ public class GameData
         AlienEndding,
         PerfectEndding
     }
-
-    /// <summary>
-    /// 任务积分变化
-    /// </summary>
-    /// <param name="changeAmount"> 任务积分变化量 </param>
-    public void ChangerAnswerScore(int changeAmount)
-    {
-        answerScore += changeAmount;
-    }
-
-    public void SetTrueEnding(bool isTrueEnding)
-    {
-        TrueEnding = isTrueEnding;
-    }
-
-    /// <summary>
-    /// 探索值变化
-    /// </summary>
-    /// <param name="changeAmount">探索值积分变化量</param>
+    
+    // 调整探索分数值
     public void ChangeExploreScore(int changeAmount)
     {
         exploreScore += changeAmount;
     }
-
-    /// <summary>
-    /// 设置个性值
-    /// </summary>
-    /// <returns></returns>
+    
+    // 调整普通分数值
+    public void ChangerAnswerScore(int changeAmount)
+    {
+        answerScore += changeAmount;
+    }
+    
+    // 调整个性分数值
     public void ChangePersonalityScore(int changeAmount)
     {
         personalityScore += changeAmount;
     }
+    
+    // 调整隐藏回答分数值
+    public void ChangeHideOptionScore(int changeAmount)
+    {
+        hideOptionScore += changeAmount;
+    }
 
-    /// <summary>
-    /// 返回探索值
-    /// </summary>
-    /// <returns></returns>
+    // 是否为真结局
+    public void SetTrueEnding(bool isTrueEnding)
+    {
+        TrueEnding = isTrueEnding;
+    }
+    
+    // 返回探索值
     public int GetExploreScore()
     {
         return exploreScore;
     }
-
-    public bool GetTrueEnding()
-    {
-        return TrueEnding;
-    }
-
-    /// <summary>
-    /// 返回游戏回答积分
-    /// </summary>
-    /// <returns></returns>
+    
+    // 返回普通分数值
     public int GetAnswerScore()
     {
         return answerScore;
     }
 
-
-    /// <summary>
-    /// 返回个性值积分
-    /// </summary>
-    /// <returns></returns>
+    // 返回个性分数值
     public int GetPersonalityScore()
     {
         return personalityScore;
     }
+    
+    // 返回隐藏分数值
+    public int GetHideOptionScore()
+    {
+        return hideOptionScore;
+    }
+    
+    // 返回是否是真结局
+    public bool GetTrueEnding()
+    {
+        return TrueEnding;
+    }
 
+    // 数据初始化
     public void InitGameData()
     {
         exploreScore = 0; // 探索值

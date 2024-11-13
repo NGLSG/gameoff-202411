@@ -1,11 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class NPC : MonoBehaviour
 {
+    public enum Gender
+    {
+        Male,
+        Female
+    }
+    
+    public enum SpecialIdentity
+    {
+        None,
+        AlienBoss,
+        Teacher
+    }
+    
     [Header("Video Config")] 
     public string npcDialogueNode;
     public string eavesdroppingNode;
@@ -17,21 +31,30 @@ public class NPC : MonoBehaviour
     [SerializeField] private TextMeshProUGUI npcSpeak;
 
     [Header("Body Config")] 
+    [SerializeField] private Gender gender;
+    [SerializeField] private SpecialIdentity identity;
     [SerializeField] private string body;
     [SerializeField] private string hair;
     [SerializeField] private string arm;
+    [SerializeField] private string bodyPath;
+    [SerializeField] private string hairPath;
+    [SerializeField] private string armPath;
     
     // 检测半径
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private LayerMask playerLayer;
+    
+    // 访问状态
+    [Header("Visited?")] public bool isVisited;
 
     private void Start()
     {
         // 初始化 NPC Speak
         npcSpeak.gameObject.SetActive(false);
         
-        // 初始化玩家身体配置
+        // 初始化玩家配置
         GenerateNPCConfig();
+        isVisited = false;
     }
 
     private void Update()
@@ -40,7 +63,7 @@ public class NPC : MonoBehaviour
         DetectPlayerInRadius();
     }
 
-// 检测小圈内玩家
+    // 检测小圈内玩家
     private void DetectPlayerInRadius()
     {
         // Physics2D.OverlapCircle检测小圈内是否有玩家
@@ -82,16 +105,86 @@ public class NPC : MonoBehaviour
     // 随机选择NPC立绘的身体
     private void GenerateNPCConfig()
     {
-        // Load all assets from Resources folders (assumes PNG files in these folders)
-        Sprite[] bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Body");
-        Sprite[] armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Arm");
-        Sprite[] hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Hair");
+        Sprite[] bodyAssets;
+        Sprite[] armAssets;
+        Sprite[] hairAssets;
 
-        // Randomly pick one file from each folder and get its name
+        // 判断是否有特殊身份
+        if (identity != SpecialIdentity.None)
+        {
+            if (identity == SpecialIdentity.Teacher)
+            {
+                if (gender == Gender.Female)
+                {
+                    // 获取特殊身份的立绘路径
+                    bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Body");
+                    armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Arm");
+                    hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Hair");
+                    
+                    // 存储路径
+                    bodyPath = "NPCArtAssets/Teacher/Female/Body";
+                    armPath = "NPCArtAssets/Teacher/Female/Arm";
+                    hairPath = "NPCArtAssets/Teacher/Female/Hair";
+                }
+                else
+                {
+                    // 获取特殊身份的立绘路径
+                    bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Male/Body");
+                    armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Male/Arm");
+                    hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Male/Hair");
+
+                    // 存储路径
+                    bodyPath = "NPCArtAssets/Teacher/Male/Body";
+                    armPath = "NPCArtAssets/Teacher/Male/Arm";
+                    hairPath = "NPCArtAssets/Teacher/Male/Hair";
+                }
+            }
+            else
+            {
+                // 获取特殊身份的立绘路径
+                bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Body");
+                armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Arm");
+                hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Hair");
+
+                // TODO: 11个特殊身份的立绘获取
+                
+                // 存储路径
+                bodyPath = "NPCArtAssets/SpecialCharacter/Body";
+                armPath = "NPCArtAssets/SpecialCharacter/Arm";
+                hairPath = "NPCArtAssets/SpecialCharacter/Hair";
+            }
+        }
+        else if (gender == Gender.Female)
+        {
+            // 获取普通学生的立绘路径
+            bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Female/Body");
+            armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Female/Arm");
+            hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Female/Hair");
+
+            // 存储路径
+            bodyPath = "NPCArtAssets/Student/Female/Body";
+            armPath = "NPCArtAssets/Student/Female/Arm";
+            hairPath = "NPCArtAssets/Student/Female/Hair";
+        }
+        else
+        {
+            // 获取普通学生的立绘路径
+            bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Male/Body");
+            armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Male/Arm");
+            hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Male/Hair");
+
+            // 存储路径
+            bodyPath = "NPCArtAssets/Student/Male/Body";
+            armPath = "NPCArtAssets/Student/Male/Arm";
+            hairPath = "NPCArtAssets/Student/Male/Hair";
+        }
+
+        // 随机选择资源
         body = bodyAssets[Random.Range(0, bodyAssets.Length)].name;
         arm = armAssets[Random.Range(0, armAssets.Length)].name;
         hair = hairAssets[Random.Range(0, hairAssets.Length)].name;
     }
+
 
     // Draw Gizmos for detecting radius (only in the Scene view)
     private void OnDrawGizmos()
@@ -109,6 +202,9 @@ public class NPC : MonoBehaviour
         npcConfig.Add("npcBody", body);
         npcConfig.Add("npcHair", hair);
         npcConfig.Add("npcArm", arm);
+        npcConfig.Add("npcBodyPath", bodyPath);
+        npcConfig.Add("npcHairPath", hairPath);
+        npcConfig.Add("npcArmPath", armPath);
 
         return npcConfig;
     }

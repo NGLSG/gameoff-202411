@@ -138,17 +138,17 @@ public class DialogueSystem : MonoBehaviour
             
             if (characterConfig.ContainsKey("npcBody"))
             {
-                CharacterBodyImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Body/{characterConfig["npcBody"]}");
+                CharacterBodyImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcBodyPath"]}/{characterConfig["npcBody"]}");
             }
         
             if (characterConfig.ContainsKey("npcArm"))
             {
-                CharacterArmImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Arm/{characterConfig["npcArm"]}");
+                CharacterArmImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcArmPath"]}/{characterConfig["npcArm"]}");
             }
         
             if (characterConfig.ContainsKey("npcHair"))
             {
-                CharacterHairImage.sprite = Resources.Load<Sprite>($"NPCArtAssets/Hair/{characterConfig["npcHair"]}");
+                CharacterHairImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcHairPath"]}/{characterConfig["npcHair"]}");
             }
         }
         else
@@ -168,6 +168,37 @@ public class DialogueSystem : MonoBehaviour
     public void SwitchCharacterPaint(string characterName)
     {
         ApplyBodyConfig(characterName);
+    }
+    
+    // 重置NPC立绘
+    [YarnCommand("change_score")]
+    public void ChangeScore(string npcName)
+    {
+        // 获取场景中所有带有NPC脚本的游戏对象
+        NPC[] npcs = FindObjectsOfType<NPC>();
+
+        // 遍历每个NPC
+        foreach (NPC npc in npcs)
+        {
+            // 判断NPC的名字是否与传入的名字相同
+            if (npc.GetNPCName() == npcName)
+            {
+                if (!npc.isVisited)
+                {
+                    // 设置isVisited为true
+                    npc.isVisited = true;
+                    // 增加exploreScore的值
+                    GameManager.Instance.GetGameData().ChangeExploreScore(1);
+                    Debug.Log($"Visited {npcName}: exploreScore increased to {GameManager.Instance.GetGameData().GetExploreScore()}");
+                }
+            }
+        }
+    }
+
+    [YarnCommand("unlock_option")]
+    public void UnlockOption(string taskID, string optionID)
+    {
+        // 
     }
     
     // 输出Json线索
@@ -211,7 +242,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     
-// 读取所有的Json
+    // 读取所有的Json
     public ClueData[] LoadAllCluesFromJson()
     {
         // Clues 文件夹路径

@@ -21,20 +21,7 @@ public class TaskOption : MonoBehaviour
 
     public void Select()
     {
-        switch (TaskOptionInfo.sType)
-        {
-            case TaskOptionInfo.OptionType.Normal:
-            case TaskOptionInfo.OptionType.Excellent:
-            case TaskOptionInfo.OptionType.Ordinary:
-                GameManager.Instance.GetGameData().ChangerAnswerScore(TaskOptionInfo.sScore);
-                break;
-            case TaskOptionInfo.OptionType.Personal:
-                GameManager.Instance.GetGameData().ChangePersonalityScore(TaskOptionInfo.sScore);
-                break;
-            case TaskOptionInfo.OptionType.TrueEnding:
-                GameManager.Instance.GetGameData().SetTrueEnding(true);
-                break;
-        }
+        ChatManager.Instance.SelectTaskOption(TaskOptionInfo);
     }
 
     private void OnEnable()

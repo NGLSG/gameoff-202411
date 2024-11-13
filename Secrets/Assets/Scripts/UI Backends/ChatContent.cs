@@ -12,7 +12,7 @@ public class ChatContent : MonoBehaviour
     public Image Avatar;
     public DialogueInfo DialogueInfo;
     public RectTransform MaxRect;
-    [SerializeField] private bool NeedAnim = true;
+    public bool NeedAnim = true;
     private Coroutine handle;
     [SerializeField] private PreloadAnim preloadAnim;
 

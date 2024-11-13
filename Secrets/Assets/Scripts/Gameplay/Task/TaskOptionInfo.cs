@@ -14,6 +14,7 @@ public struct TaskOptionInfo
         TrueEnding
     }
 
+    public int OptID;
     public OptionType sType;
     public int sScore;
     public string sContent;

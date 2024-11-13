@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class NPC : MonoBehaviour
 {
@@ -16,7 +19,7 @@ public class NPC : MonoBehaviour
     public enum SpecialIdentity
     {
         None,
-        AlienBoss,
+        SpecialCharatcer,
         Teacher
     }
     
@@ -26,8 +29,9 @@ public class NPC : MonoBehaviour
     public float eavesdroppingShowGapTime;
 
     [Header("Map Tag Config")] 
+    [SerializeField] private string npcName;
     [SerializeField] private SpriteRenderer npcHeadPhoto;
-    [SerializeField] private TextMeshProUGUI npcName;
+    [SerializeField] private TextMeshProUGUI npcNameText;
     [SerializeField] private TextMeshProUGUI npcSpeak;
 
     [Header("Body Config")] 
@@ -54,6 +58,7 @@ public class NPC : MonoBehaviour
         
         // 初始化玩家配置
         GenerateNPCConfig();
+        npcNameText.text = npcName;
         isVisited = false;
     }
 
@@ -145,13 +150,18 @@ public class NPC : MonoBehaviour
                 bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Body");
                 armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Arm");
                 hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/SpecialCharacter/Hair");
-
-                // TODO: 11个特殊身份的立绘获取
+                
+                // 动态获取当前NPC对应的资源
+                body = Array.Find(bodyAssets, sprite => sprite.name.StartsWith(npcName)).name;
+                arm = Array.Find(armAssets, sprite => sprite.name.StartsWith(npcName)).name;
+                hair = Array.Find(hairAssets, sprite => sprite.name.StartsWith(npcName)).name;
                 
                 // 存储路径
                 bodyPath = "NPCArtAssets/SpecialCharacter/Body";
                 armPath = "NPCArtAssets/SpecialCharacter/Arm";
                 hairPath = "NPCArtAssets/SpecialCharacter/Hair";
+                
+                return;
             }
         }
         else if (gender == Gender.Female)
@@ -211,6 +221,6 @@ public class NPC : MonoBehaviour
 
     public string GetNPCName()
     {
-        return npcName.text;
+        return npcName;
     }
 }

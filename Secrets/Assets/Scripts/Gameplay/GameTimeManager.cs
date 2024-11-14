@@ -122,10 +122,10 @@ public class GameTimeManager : Singleton<GameTimeManager>
         {
             while (isPaused)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSecondsRealtime(0.1f);
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSecondsRealtime(0.1f);
 
             record += 0.1f;
             ProcessTime();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -13,6 +14,10 @@ public class GameManager : Singleton<GameManager>
         gameData = new GameData();
         stateMechine = new StateManager();
         stateMechine.SetState("GameInitState");
+        if (Directory.Exists(Path.Combine(Application.persistentDataPath, "Resources/Clues")))
+        {
+            Directory.Delete(Path.Combine(Application.persistentDataPath, "Resources/Clues"), true);
+        }
     }
 
     public GameData GetGameData()

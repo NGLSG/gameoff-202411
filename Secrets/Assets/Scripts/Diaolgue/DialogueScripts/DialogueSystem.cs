@@ -22,7 +22,7 @@ public class DialogueSystem : MonoBehaviour
     public Image CharacterHairImage;
 
     private Coroutine dialogueCoroutine;
-    
+
     // 数据存储类
     [Serializable]
     public class ClueData
@@ -58,27 +58,28 @@ public class DialogueSystem : MonoBehaviour
     {
         //TODO: Set characterPaint as the paint we want
         ApplyBodyConfig(characterName);
-        
+
         //Start dialogue
         if (dialogueRunner.IsDialogueRunning)
         {
             dialogueRunner.Stop();
         }
+
         dialogueRunner.StartDialogue(dialogueName);
     }
-    
+
     // 开启偷听
     public void StartDialogue(string characterName, string dialogueNode, float timeToWait)
     {
         //TODO: Set characterPaint as the paint we want
         ApplyBodyConfig(characterName);
-        
+
         // 停止之前的协程（如果有的话）
         if (dialogueCoroutine != null)
         {
             StopCoroutine(dialogueCoroutine);
         }
-    
+
         dialogueRunner.StartDialogue(dialogueNode);
         dialogueCoroutine = StartCoroutine(AutoAdvance(timeToWait));
     }
@@ -100,7 +101,7 @@ public class DialogueSystem : MonoBehaviour
             dialogueRunner.Stop();
         }
     }
-    
+
     // 检测是否有对话正在运行
     public bool IsDialogueRunning()
     {
@@ -113,7 +114,7 @@ public class DialogueSystem : MonoBehaviour
         AudioLineProvider textAudioLanguage = dialogueRunner.GetComponent<AudioLineProvider>();
         textAudioLanguage.textLanguageCode = languageCode;
     }
-    
+
     // 根据场景内的玩家信息拼装立绘
     private void ApplyBodyConfig(string characterName)
     {
@@ -135,20 +136,23 @@ public class DialogueSystem : MonoBehaviour
         if (npc != null)
         {
             Dictionary<string, string> characterConfig = npc.GetComponent<NPC>().GetConfigOfNPC();
-            
+
             if (characterConfig.ContainsKey("npcBody"))
             {
-                CharacterBodyImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcBodyPath"]}/{characterConfig["npcBody"]}");
+                CharacterBodyImage.sprite =
+                    Resources.Load<Sprite>($"{characterConfig["npcBodyPath"]}/{characterConfig["npcBody"]}");
             }
-        
+
             if (characterConfig.ContainsKey("npcArm"))
             {
-                CharacterArmImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcArmPath"]}/{characterConfig["npcArm"]}");
+                CharacterArmImage.sprite =
+                    Resources.Load<Sprite>($"{characterConfig["npcArmPath"]}/{characterConfig["npcArm"]}");
             }
-        
+
             if (characterConfig.ContainsKey("npcHair"))
             {
-                CharacterHairImage.sprite = Resources.Load<Sprite>($"{characterConfig["npcHairPath"]}/{characterConfig["npcHair"]}");
+                CharacterHairImage.sprite =
+                    Resources.Load<Sprite>($"{characterConfig["npcHairPath"]}/{characterConfig["npcHair"]}");
             }
         }
         else
@@ -156,20 +160,20 @@ public class DialogueSystem : MonoBehaviour
             Debug.LogError("NPC not found!");
         }
     }
-    
+
     public void ResetPlayerChattingState()
     {
         PlayerController.Instance.SetChattingState(false);
         Debug.Log("DialogueFinished");
     }
-    
+
     // 重置NPC立绘
     [YarnCommand("switch_character")]
     public void SwitchCharacterPaint(string characterName)
     {
         ApplyBodyConfig(characterName);
     }
-    
+
     // 重置NPC立绘
     [YarnCommand("change_score")]
     public void ChangeScore(string npcName)
@@ -189,7 +193,8 @@ public class DialogueSystem : MonoBehaviour
                     npc.isVisited = true;
                     // 增加exploreScore的值
                     GameManager.Instance.GetGameData().ChangeExploreScore(1);
-                    Debug.Log($"Visited {npcName}: exploreScore increased to {GameManager.Instance.GetGameData().GetExploreScore()}");
+                    Debug.Log(
+                        $"Visited {npcName}: exploreScore increased to {GameManager.Instance.GetGameData().GetExploreScore()}");
                 }
             }
         }
@@ -201,7 +206,7 @@ public class DialogueSystem : MonoBehaviour
         // 解锁任务
         TaskManager.Instance.UnlockOption(taskID, optionID);
     }
-    
+
     // 输出Json线索
     [YarnCommand("save_clues")]
     public void SaveCluesToJson(string title, string dialogueType)
@@ -224,7 +229,7 @@ public class DialogueSystem : MonoBehaviour
         string json = JsonUtility.ToJson(clueData, true);
 
         // 设置文件保存路径
-        string filePath = Path.Combine(Application.dataPath, "Resources/Clues", $"{title}.json");
+        string filePath = Path.Combine(Application.persistentDataPath, "Resources/Clues", $"{title}.json");
 
         // 创建文件夹（如果不存在）
         string directoryPath = Path.GetDirectoryName(filePath);
@@ -242,12 +247,12 @@ public class DialogueSystem : MonoBehaviour
         lineView.InitClues();
     }
 
-    
+
     // 读取所有的Json
     public ClueData[] LoadAllCluesFromJson()
     {
         // Clues 文件夹路径
-        string folderPath = Path.Combine(Application.dataPath, "Resources/Clues");
+        string folderPath = Path.Combine(Application.persistentDataPath, "Resources/Clues");
 
         // 获取文件夹下所有 JSON 文件路径
         string[] files = Directory.GetFiles(folderPath, "*.json");
@@ -275,6 +280,4 @@ public class DialogueSystem : MonoBehaviour
         // 将列表转换为数组并返回
         return cluesList.ToArray();
     }
-
-
 }

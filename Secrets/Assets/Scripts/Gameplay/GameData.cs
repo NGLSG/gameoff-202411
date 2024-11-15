@@ -20,18 +20,22 @@ public class GameData
     public void ChangeExploreScore(int changeAmount)
     {
         exploreScore += changeAmount;
+        HUD.Instance.SetExploreValue(exploreScore);
     }
     
     // 调整普通分数值
     public void ChangerAnswerScore(int changeAmount)
     {
         answerScore += changeAmount;
+        HUD.Instance.SetNormalValue(answerScore);
     }
+
     
     // 调整个性分数值
     public void ChangePersonalityScore(int changeAmount)
     {
         personalityScore += changeAmount;
+        HUD.Instance.SetPersonalValue(personalityScore);
     }
     
     // 调整隐藏回答分数值

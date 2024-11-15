@@ -95,7 +95,7 @@ public class ChatManager : Singleton<ChatManager>
                     GameManager.Instance.GetGameData().ChangePersonalityScore(taskOptionInfo.sScore);
                     break;
                 case TaskOptionInfo.OptionType.Hidden:
-                    GameManager.Instance.GetGameData().SetTrueEnding(true);
+                    GameManager.Instance.GetGameData().ChangeHideOptionScore(taskOptionInfo.sScore);
                     break;
                 case TaskOptionInfo.OptionType.Normal:
                 case TaskOptionInfo.OptionType.Ordinary:

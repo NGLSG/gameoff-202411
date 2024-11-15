@@ -70,7 +70,7 @@ public class ChatContent : MonoBehaviour
                     Math.Min(content.preferredWidth + 10, MaxRect.rect.width - 32),
                     content.preferredHeight);
             var maxHeight = MaxRect.sizeDelta;
-            maxHeight.y = Math.Max(content.preferredHeight + 10, 64);
+            maxHeight.y = content.preferredHeight + 20;
             MaxRect.sizeDelta = maxHeight;
             yield return new WaitForEndOfFrame();
         }

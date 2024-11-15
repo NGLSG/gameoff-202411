@@ -61,7 +61,7 @@ public class PlayerController : Singleton<PlayerController>
         isChatting = false;
         isEvasdropping = false;
         noteText.gameObject.SetActive(false);
-        DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
+        //DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
     }
 
     IEnumerator PlayerInputHandler()
@@ -144,7 +144,7 @@ public class PlayerController : Singleton<PlayerController>
                 Vector2 direction = closestNPC.transform.position - transform.position;
 
                 // 设置LayerMask忽略自己的碰撞体
-                int layerMask = ~(1 << gameObject.layer); // 忽略当前物体所在的Layer
+                int layerMask = ~(1 << gameObject.layer | 1 << LayerMask.NameToLayer("Room"));
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, detectionRadius, layerMask);
 
 

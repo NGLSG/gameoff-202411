@@ -56,11 +56,6 @@ public class UISetting : Singleton<UISetting>
     public void ExitGame()
     {
         Utils.Exit();
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
+        GameManager.Instance.stateMechine.SetState("GameInitState");
     }
 }

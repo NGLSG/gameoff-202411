@@ -34,6 +34,7 @@ public class GameUIManager : Singleton<GameUIManager>
     [SerializeField] private Image GameOverImage;
     [SerializeField] private TextMeshProUGUI GameOverText;
     [SerializeField] private EndingInfo[] EnddingInfos = new EndingInfo[5];
+    [SerializeField] private GameObject GameOver;
 
 
     private InputManager m_InputManager;
@@ -162,5 +163,7 @@ public class GameUIManager : Singleton<GameUIManager>
             default:
                 break;
         }
+        
+        GameOver.SetActive(true);
     }
 }

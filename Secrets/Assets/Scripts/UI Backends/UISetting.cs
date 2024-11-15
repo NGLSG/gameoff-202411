@@ -55,7 +55,7 @@ public class UISetting : Singleton<UISetting>
 
     public void ExitGame()
     {
-        Utils.Exit();
         GameManager.Instance.stateMechine.SetState("GameInitState");
+        Utils.Exit();
     }
 }

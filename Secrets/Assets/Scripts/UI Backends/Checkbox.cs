@@ -54,10 +54,10 @@ public class Checkbox : MonoBehaviour
         LabelBackground.SetActive(!isOn);
         Icon.transform.localPosition = isOn
             ? new Vector3(
-                Filled.transform.position.x + Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2 +
+                Filled.transform.localPosition.x + Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2 -
                 Icon.transform.GetComponent<RectTransform>().sizeDelta.x / 2, 0, 0)
             : new Vector3(
-                Filled.transform.position.x - Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2 +
-                Icon.transform.GetComponent<RectTransform>().sizeDelta.x / 2, 0, 0);
+                Filled.transform.localPosition.x - Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2, 0,
+                0);
     }
 }

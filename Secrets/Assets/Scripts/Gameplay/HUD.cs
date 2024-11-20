@@ -5,22 +5,25 @@ using UnityEngine;
 
 public class HUD : Singleton<HUD>
 {
-    [SerializeField] private TextMeshProUGUI exploreV;
-    [SerializeField] private TextMeshProUGUI personalV;
-    [SerializeField] private TextMeshProUGUI normalV;
+    [SerializeField] private UISlider exploreV;
+    [SerializeField] private UISlider personalV;
+    [SerializeField] private UISlider normalV;
 
+    [SerializeField] private int exploreValueMax;
+    [SerializeField] private int personalValueMax;
+    [SerializeField] private int normalValueMax;
    public void SetExploreValue(int value)
     {
-        exploreV.text = value.ToString();
+        exploreV.SetRate((float)value/exploreValueMax);
     }
 
     public void SetPersonalValue(int value)
     {
-        personalV.text = value.ToString();
+        personalV.SetRate((float)value/personalValueMax);
     }
 
     public void SetNormalValue(int value)
     {
-        normalV.text = value.ToString();
+        normalV.SetRate((float)value/normalValueMax);
     }
 }

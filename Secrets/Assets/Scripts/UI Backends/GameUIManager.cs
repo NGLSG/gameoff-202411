@@ -16,13 +16,7 @@ public class GameUIManager : Singleton<GameUIManager>
         public string Name;
     }
 
-    [Serializable]
-    [CreateAssetMenu(fileName = "EndingInfo", menuName = "EndingInfo")]
-    public class EndingInfo : ScriptableObject
-    {
-        public Sprite Sprite;
-        public string Text;
-    }
+
 
     [SerializeField] private Image ShowingSprite1;
     [SerializeField] private Image ShowingSprite2;

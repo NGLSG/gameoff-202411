@@ -6,5 +6,21 @@ using UnityEngine;
 public class EndingInfo : ScriptableObject
 {
     public Sprite Sprite;
-    public string Text;
+
+    public LocalizedContent Content;
+
+    public string Text
+    {
+        get
+        {
+            if (GameSetting.Setting.Language == "en")
+            {
+                return Content.En;
+            }
+            else
+            {
+                return Content.Cn;
+            }
+        }
+    }
 }

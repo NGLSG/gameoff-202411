@@ -10,7 +10,7 @@ public struct DialogueInfo
     {
         get
         {
-            if (GameSetting.Setting.Language == "EN")
+            if (GameSetting.Setting.Language == "en")
             {
                 return Content.En;
             }

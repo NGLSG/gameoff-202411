@@ -27,7 +27,7 @@ public struct TaskOptionInfo
     {
         get
         {
-            if (GameSetting.Setting.Language == "EN")
+            if (GameSetting.Setting.Language == "en")
             {
                 return loclizedContent.En;
             }

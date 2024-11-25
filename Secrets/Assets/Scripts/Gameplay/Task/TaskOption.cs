@@ -8,46 +8,50 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class TaskOption : MonoBehaviour
 {
-    public TaskOptionInfo TaskOptionInfo;
-    [SerializeField] private TextMeshProUGUI OptionText;
+    public TextMeshProUGUI content;
+    public Image Background;
+    public RectTransform MaxRect;
     private Coroutine handle;
-    private Button btn;
-    private RectTransform ParentRectTransform;
+    [SerializeField] private PreloadAnim preloadAnim;
+    public TaskOptionInfo TaskOptionInfo;
 
-    public void SetTaskOptionInfo(TaskOptionInfo info)
-    {
-        TaskOptionInfo = info;
-    }
 
-    public void Select()
-    {
-        ChatManager.Instance.SelectTaskOption(TaskOptionInfo);
-    }
-
-    private void OnEnable()
+    void Start()
     {
         if (handle != null)
         {
             StopCoroutine(handle);
         }
 
-        ParentRectTransform = transform.parent.GetComponent<RectTransform>();
-        btn = GetComponent<Button>();
-        btn.onClick.AddListener(Select);
+        MaxRect = transform.parent.GetComponent<RectTransform>();
         handle = StartCoroutine(Handler());
+        GetComponent<Button>().onClick.AddListener(Select);
     }
+
 
     private IEnumerator Handler()
     {
         while (gameObject)
         {
-            OptionText.text = TaskOptionInfo.sContent;
-            btn.GetComponent<RectTransform>().sizeDelta =
-                new Vector2(Math.Min(OptionText.preferredWidth + 30, ParentRectTransform.sizeDelta.x),
-                    OptionText.preferredHeight + 20);
-            ParentRectTransform.sizeDelta =
-                new Vector2(ParentRectTransform.sizeDelta.x+ 30, OptionText.preferredHeight + 20);
-            yield return null;
+            Background.rectTransform.sizeDelta =
+                new Vector2(
+                    Math.Min(content.preferredWidth + 10, MaxRect.rect.width - 32),
+                    content.preferredHeight + 20);
+            var maxHeight = MaxRect.sizeDelta;
+            maxHeight.y = content.preferredHeight + 20;
+            MaxRect.sizeDelta = maxHeight;
+            yield return new WaitForEndOfFrame();
         }
+    }
+
+    public void SetTaskOptionInfo(TaskOptionInfo info)
+    {
+        TaskOptionInfo = info;
+        content.text = info.sContent;
+    }
+    
+    public void Select()
+    {
+        ChatManager.Instance.SelectTaskOption(TaskOptionInfo);
     }
 }

@@ -41,7 +41,6 @@ public class Checkbox : MonoBehaviour
             float width = Label.preferredWidth;
             float height = Label.preferredHeight;
             LabelBackground.GetComponent<RectTransform>().sizeDelta = new Vector2(width + 10, height + 10);
-            Filled.GetComponent<RectTransform>().sizeDelta = LabelBackground.GetComponent<RectTransform>().sizeDelta;
             Refresh();
             yield return new WaitForEndOfFrame();
         }

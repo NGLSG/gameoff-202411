@@ -4,7 +4,22 @@ using System.Collections.Generic;
 [Serializable]
 public struct DialogueInfo
 {
-    public string Dialogue;
+    public LocalizedContent Content;
+
+    public string Dialogue
+    {
+        get
+        {
+            if (GameSetting.Setting.Language == "EN")
+            {
+                return Content.En;
+            }
+            else
+            {
+                return Content.Cn;
+            }
+        }
+    }
 }
 
 [Serializable]

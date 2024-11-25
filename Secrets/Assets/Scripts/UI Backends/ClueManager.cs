@@ -30,7 +30,7 @@ public class ClueManager : Singleton<ClueManager>
         foreach (var cc in ClueDatas[index].content)
         {
             var go = Instantiate(CluePrefab, ClueParent.transform);
-            go.GetComponentInChildren<ChatContent>().content.text = cc.Text;
+            go.GetComponentInChildren<ChatContent>().content.text = Utils.StringCombine(cc.Speaker, ": ", cc.Text);
         }
     }
 }

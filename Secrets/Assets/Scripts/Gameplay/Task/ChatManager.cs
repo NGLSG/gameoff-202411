@@ -2,12 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ChatManager : Singleton<ChatManager>
 {
+    [Serializable]
+    public struct NPCInfo
+    {
+        public string NPCID;
+        public Sprite NPCSprite;
+    }
+
     public List<DialogueInfo> DialogueInfos;
+    public List<NPCInfo> NPCInfos;
     public List<TaskOptionInfo> TaskOptionInfos;
     [SerializeField] private GameObject ChatParent;
     [SerializeField] private GameObject TaskParent;
@@ -19,6 +28,9 @@ public class ChatManager : Singleton<ChatManager>
     [SerializeField] private TaskManager.TaskInfo.State TaskState;
     [SerializeField] private Transform _1;
     [SerializeField] private Transform _2;
+    [SerializeField] private TextMeshProUGUI NPC;
+    [SerializeField] private TextMeshProUGUI Input;
+    [SerializeField] private TaskOptionInfo currentTaskOptionInfo;
 
     public IEnumerator Refresh()
     {
@@ -33,16 +45,17 @@ public class ChatManager : Singleton<ChatManager>
         {
             var chatContent = Instantiate(ChatContentPrefab, ChatParent.transform);
             chatContent.GetComponentInChildren<ChatContent>().NeedAnim = TaskState == TaskManager.TaskInfo.State.UnRead;
-            if (TaskState == TaskManager.TaskInfo.State.UnRead)
-            {
-                TaskState = TaskManager.TaskInfo.State.InProgress;
-                TaskManager.Instance.SetTaskState(TaskID, TaskState);
-            }
-
+            chatContent.GetComponentInChildren<ChatContent>().Avatar.sprite = GetNPCSprite(NPC.text);
             chatContent.transform.parent = ChatParent.transform;
             chatContent.GetComponentInChildren<ChatContent>().SetDialogueInfo(info);
             if (delayPlay)
                 yield return new WaitForSecondsRealtime(Random.Range(0.3f, 0.5f));
+        }
+
+        if (TaskState == TaskManager.TaskInfo.State.UnRead)
+        {
+            TaskState = TaskManager.TaskInfo.State.InProgress;
+            TaskManager.Instance.SetTaskState(TaskID, TaskState);
         }
 
 
@@ -69,6 +82,11 @@ public class ChatManager : Singleton<ChatManager>
         yield break;
     }
 
+    public Sprite GetNPCSprite(string NPCID)
+    {
+        return NPCInfos.First(x => x.NPCID == NPCID).NPCSprite;
+    }
+
     public void SetTaskID(int taskID)
     {
         TaskID = taskID;
@@ -76,6 +94,7 @@ public class ChatManager : Singleton<ChatManager>
         Utils.RemoveAllChildren(ChatParent.transform);
         DialogueInfos = tasks.DialogueInfos;
         TaskOptionInfos = TaskManager.Instance.TaskOptions[TaskID];
+        NPC.text = TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).NPCID;
 
         TaskState = TaskManager.Instance.GetTaskState(TaskID);
         StartCoroutine(Refresh());
@@ -84,29 +103,36 @@ public class ChatManager : Singleton<ChatManager>
 
     public void SelectTaskOption(TaskOptionInfo taskOptionInfo)
     {
-        if (TaskOptionInfos.Any(x => x.sContent == taskOptionInfo.sContent))
+        currentTaskOptionInfo = taskOptionInfo;
+        Input.text = taskOptionInfo.sContent;
+    }
+
+    public void Send()
+    {
+        if (TaskOptionInfos.Any(x => x.sContent == currentTaskOptionInfo.sContent))
         {
             ChatParent.transform.SetPositionAndRotation(_2.position, _2.rotation);
             TaskParent.transform.parent.gameObject.SetActive(false);
             TaskManager.Instance.SetTaskState(TaskID, TaskManager.TaskInfo.State.Finished);
-            switch (taskOptionInfo.sType)
+            switch (currentTaskOptionInfo.sType)
             {
                 case TaskOptionInfo.OptionType.Personal:
-                    GameManager.Instance.GetGameData().ChangePersonalityScore(taskOptionInfo.sScore);
+                    GameManager.Instance.GetGameData().ChangePersonalityScore(currentTaskOptionInfo.sScore);
                     break;
                 case TaskOptionInfo.OptionType.Hidden:
-                    GameManager.Instance.GetGameData().ChangeHideOptionScore(taskOptionInfo.sScore);
+                    GameManager.Instance.GetGameData().ChangeHideOptionScore(currentTaskOptionInfo.sScore);
                     break;
                 case TaskOptionInfo.OptionType.Normal:
-                case TaskOptionInfo.OptionType.Ordinary:
-                    GameManager.Instance.GetGameData().ChangerAnswerScore(taskOptionInfo.sScore);
+                case TaskOptionInfo.OptionType.Worse:
+                    GameManager.Instance.GetGameData().ChangerAnswerScore(currentTaskOptionInfo.sScore);
                     break;
             }
 
             TaskManager.Instance.SetTaskState(TaskID, TaskManager.TaskInfo.State.Finished);
-            TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).OptionID = taskOptionInfo.OptID;
+            TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).OptionID = currentTaskOptionInfo.OptID;
             var go = Instantiate(PlayerContentPrefab, ChatParent.transform);
-            go.GetComponentInChildren<ChatContent>().content.text = taskOptionInfo.sContent;
+            go.GetComponentInChildren<ChatContent>().content.text = currentTaskOptionInfo.sContent;
+            Input.text = "";
         }
     }
 }

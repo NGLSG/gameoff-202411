@@ -43,10 +43,10 @@ public class TaskOption : MonoBehaviour
         {
             OptionText.text = TaskOptionInfo.sContent;
             btn.GetComponent<RectTransform>().sizeDelta =
-                new Vector2(Math.Min(OptionText.preferredWidth + 10, ParentRectTransform.sizeDelta.x),
+                new Vector2(Math.Min(OptionText.preferredWidth + 30, ParentRectTransform.sizeDelta.x),
                     OptionText.preferredHeight + 20);
             ParentRectTransform.sizeDelta =
-                new Vector2(ParentRectTransform.sizeDelta.x, OptionText.preferredHeight + 20);
+                new Vector2(ParentRectTransform.sizeDelta.x+ 30, OptionText.preferredHeight + 20);
             yield return null;
         }
     }

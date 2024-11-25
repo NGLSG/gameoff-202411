@@ -20,6 +20,7 @@ public class TaskManager : Singleton<TaskManager>
         public int TaskID;
         public State TaskState;
         public int OptionID;
+        public string NPCID;
     }
 
     public Dictionary<int, List<TaskOptionInfo>> TaskOptions =
@@ -48,23 +49,12 @@ public class TaskManager : Singleton<TaskManager>
         {
             var taskObj = Instantiate(TaskPrefab, TaskParent.transform);
             taskObj.transform.parent = TaskParent.transform;
-            taskObj.GetComponent<Task>().SetTaskInfo(task);
+            taskObj.GetComponentInChildren<Task>().SetTaskInfo(task);
         }
     }
 
     private void SaveTempJson()
     {
-#if UNITY_EDITOR
-        var t = new DialogueStorageInfo();
-        t.DialogueInfos.Add(new DialogueInfo() { Dialogue = "Hello" });
-
-        Utils.SaveAsJson(t, Application.dataPath + "/Resources/Tasks/TempDialog.json");
-        var t2 = new TaskOptionStorageInfo();
-        t2.TaskOptions.Add(new TaskOptionInfo()
-            { sType = TaskOptionInfo.OptionType.Normal, sScore = 10, sContent = "Hello", sUnlocked = true });
-        Utils.SaveAsJson(t2,
-            Application.dataPath + "/Resources/Tasks/TaskOptions/TempDialog.json");
-#endif
     }
 
     private void LoadingTasks()
@@ -90,7 +80,8 @@ public class TaskManager : Singleton<TaskManager>
             if (!isExist)
                 Tasks.Add(new TaskInfo()
                 {
-                    TaskID = taskInfo.TaskID
+                    TaskID = taskInfo.TaskID,
+                    NPCID = taskInfo.NPCID
                 });
             foreach (var optInfos in taskOptionInfos)
             {

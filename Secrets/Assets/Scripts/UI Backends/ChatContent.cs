@@ -17,7 +17,7 @@ public class ChatContent : MonoBehaviour
     [SerializeField] private PreloadAnim preloadAnim;
 
 
-    void Awake()
+    void Start()
     {
         if (handle != null)
         {
@@ -26,6 +26,8 @@ public class ChatContent : MonoBehaviour
 
         if (NeedAnim)
             PlayShowAnim();
+        else
+            preloadAnim.gameObject.SetActive(false);
         MaxRect = transform.parent.GetComponent<RectTransform>();
         handle = StartCoroutine(Handler());
     }
@@ -68,7 +70,7 @@ public class ChatContent : MonoBehaviour
             Background.rectTransform.sizeDelta =
                 new Vector2(
                     Math.Min(content.preferredWidth + 10, MaxRect.rect.width - 32),
-                    content.preferredHeight);
+                    content.preferredHeight + 20);
             var maxHeight = MaxRect.sizeDelta;
             maxHeight.y = content.preferredHeight + 20;
             MaxRect.sizeDelta = maxHeight;

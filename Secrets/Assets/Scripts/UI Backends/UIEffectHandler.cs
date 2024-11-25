@@ -14,6 +14,7 @@ public class UIEffectHandler : MonoBehaviour
     [SerializeField] private Ease ShowEase = Ease.OutBack;
     [SerializeField] private Ease ShrinkEase = Ease.InBack;
     [SerializeField] private bool CloseOnClickOutside = true;
+    [SerializeField] private bool AlawaysShow = false;
 
     private Coroutine handle;
 
@@ -78,7 +79,8 @@ public class UIEffectHandler : MonoBehaviour
             GameUIManager.Instance.TogglePause(false);
         transform.DOScale(ShrinkTargetScale, shrinkDuration).SetEase(ShrinkEase).SetUpdate(true).OnComplete(() =>
         {
-            gameObject.SetActive(false);
+            if (!AlawaysShow)
+                gameObject.SetActive(false);
             GameUIManager.Instance.EscPause = true;
         });
     }

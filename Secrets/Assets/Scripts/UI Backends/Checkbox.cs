@@ -50,14 +50,12 @@ public class Checkbox : MonoBehaviour
     void Refresh()
     {
         Filled.SetActive(isOn);
-        Label.gameObject.SetActive(!isOn);
-        LabelBackground.SetActive(!isOn);
         Icon.transform.localPosition = isOn
             ? new Vector3(
                 Filled.transform.localPosition.x + Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2 -
-                Icon.transform.GetComponent<RectTransform>().sizeDelta.x / 2, 0, 0)
+                Icon.transform.GetComponent<RectTransform>().sizeDelta.x / 2f, 0, 0)
             : new Vector3(
-                Filled.transform.localPosition.x - Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 2, 0,
+                Filled.transform.localPosition.x - Filled.transform.GetComponent<RectTransform>().sizeDelta.x / 1.6f, 0,
                 0);
     }
 }

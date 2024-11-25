@@ -7,7 +7,7 @@ public class GameSetting : Singleton<GameSetting>
     public static Setting Setting = new Setting();
     [SerializeField] private Checkbox BGMCheckbox;
     [SerializeField] private Checkbox SoundCheckbox;
-    [SerializeField] private TMP_Dropdown LanguageDropdown;
+    private int idx = 0;
 
     void Awake()
     {
@@ -15,20 +15,11 @@ public class GameSetting : Singleton<GameSetting>
         SoundCheckbox.isOn = Setting.GameSoundOn;
         BGMCheckbox.OnChange.Add(OnBGMToggle);
         SoundCheckbox.OnChange.Add(OnSoundToggle);
-        LanguageDropdown.onValueChanged.AddListener(OnLanguageChange);
     }
 
-    void OnLanguageChange(int index)
+    public void OnLanguageChange()
     {
-        if (LanguageDropdown.options[index].text == "English")
-        {
-            Setting.Language = "en";
-        }
-        else if (LanguageDropdown.options[index].text == "简体中文")
-        {
-            Setting.Language = "zh-cn";
-        }
-
+        Setting.Language = ++idx % 2 == 0 ? "zh-cn" : "en";
         if (Setting.Language == "en")
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[1];

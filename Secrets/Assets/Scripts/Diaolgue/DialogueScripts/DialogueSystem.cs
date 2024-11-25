@@ -201,10 +201,10 @@ public class DialogueSystem : MonoBehaviour
     }
 
     [YarnCommand("unlock_option")]
-    public void UnlockOption(int taskID, int optionID)
+    public void UnlockOption(int optionID)
     {
         // 解锁任务
-        TaskManager.Instance.UnlockOption(taskID, optionID);
+        TaskManager.Instance.UnlockOption(optionID);
     }
 
     // 输出Json线索

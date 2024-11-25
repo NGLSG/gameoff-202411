@@ -101,17 +101,16 @@ public class TaskManager : Singleton<TaskManager>
         }
     }
 
-    public void UnlockOption(int taskID, int optionID)
+    public void UnlockOption(int optionID)
     {
-        if (TaskOptions.TryGetValue(taskID, out var v1))
-        {
+        foreach (var v1 in TaskOptions.Values)
             if (v1.Any(info => info.OptID == optionID))
             {
                 var opt = v1.FirstOrDefault(info => info.OptID == optionID);
                 opt.sUnlocked = true;
             }
-        }
     }
+
 
     public TaskInfo.State GetTaskState(int taskID)
     {

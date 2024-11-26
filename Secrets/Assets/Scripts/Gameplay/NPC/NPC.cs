@@ -168,6 +168,7 @@ public class NPC : MonoBehaviour
         Sprite[] bodyAssets;
         Sprite[] armAssets;
         Sprite[] hairAssets;
+        Sprite[] npcHeadPhotos;
 
         // 判断是否有特殊身份
         if (identity != SpecialIdentity.None)
@@ -180,13 +181,14 @@ public class NPC : MonoBehaviour
                     bodyAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Body");
                     armAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Arm");
                     hairAssets = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Hair");
-                    
+
                     // 存储路径
                     bodyPath = "NPCArtAssets/Teacher/Female/Body";
                     armPath = "NPCArtAssets/Teacher/Female/Arm";
                     hairPath = "NPCArtAssets/Teacher/Female/Hair";
 
-                    frontSprite = Resources.Load<Sprite>("NPCArtAssets/Teacher/Female/Movement/正");
+                    npcHeadPhotos = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Female/Movement");
+                    frontSprite = npcHeadPhotos[Random.Range(0, npcHeadPhotos.Length)];
                 }
                 else
                 {
@@ -200,7 +202,8 @@ public class NPC : MonoBehaviour
                     armPath = "NPCArtAssets/Teacher/Male/Arm";
                     hairPath = "NPCArtAssets/Teacher/Male/Hair";
 
-                    frontSprite = Resources.Load<Sprite>("NPCArtAssets/Teacher/Male/Movement/正");
+                    npcHeadPhotos = Resources.LoadAll<Sprite>("NPCArtAssets/Teacher/Male/Movement");
+                    frontSprite = npcHeadPhotos[Random.Range(0, npcHeadPhotos.Length)];
                 }
             }
             else
@@ -235,7 +238,8 @@ public class NPC : MonoBehaviour
             armPath = "NPCArtAssets/Student/Female/Arm";
             hairPath = "NPCArtAssets/Student/Female/Hair";
 
-            frontSprite = Resources.Load<Sprite>("NPCArtAssets/Student/Female/Movement/正");
+            npcHeadPhotos = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Female/Movement");
+            frontSprite = npcHeadPhotos[Random.Range(0, npcHeadPhotos.Length)];
         }
         else
         {
@@ -249,7 +253,8 @@ public class NPC : MonoBehaviour
             armPath = "NPCArtAssets/Student/Male/Arm";
             hairPath = "NPCArtAssets/Student/Male/Hair";
 
-            frontSprite = Resources.Load<Sprite>("NPCArtAssets/Student/Male/Movement/正");
+            npcHeadPhotos = Resources.LoadAll<Sprite>("NPCArtAssets/Student/Male/Movement");
+            frontSprite = npcHeadPhotos[Random.Range(0, npcHeadPhotos.Length)];
         }
 
         // 随机选择资源

@@ -34,6 +34,16 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private LayerMask npcLayer;
     [SerializeField] private TextMeshProUGUI noteText;
 
+    [Header("Player Move Anim")]
+    public Sprite backSprite;
+    public Sprite frontSprite;
+    public Sprite sideSprite;
+    public SpriteRenderer _spriteRenderer;
+    public float scaleDuration = 0.5f;  // 缩放动画持续时间
+    public float scaleAmount = 0.14f;    // 压缩比例
+    public int loopCount = -1;          // -1表示无限循环
+
+
     private void OnEnable()
     {
         if (_playerControls == null)
@@ -62,6 +72,8 @@ public class PlayerController : Singleton<PlayerController>
         isEvasdropping = false;
         noteText.gameObject.SetActive(false);
         //DialogueSystem.Instance.SetLanguage(GameSetting.Setting.Language);
+        // 调用方法开始动画
+        StartCompressionEffect();
     }
 
     IEnumerator PlayerInputHandler()
@@ -86,31 +98,58 @@ public class PlayerController : Singleton<PlayerController>
         Vector2 currentPosition = _rigidbody2D.position;
         Vector2 newPosition = currentPosition + direction * PlayerAttributes.RunSpeed * Time.fixedDeltaTime;
         _rigidbody2D.MovePosition(newPosition);
+
+        // 播放走路音效
+        AudioManager.Instance.PlaySoundEffectWithoutShutDown(3);
+
+        // 更新玩家的朝向和sprite
+        UpdatePlayerOrientation(direction);
     }
 
     void Update()
     {
         // 这里可以处理其他逻辑，例如动画等
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            DialogueSystem.Instance.SetLanguage("en");
-        }
+        SenseNPC();
+    }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            DialogueSystem.Instance.StartDialogueWithPause("No.壹号", "Start");
-        }
+    // 让sprite不断在y轴上轻微压缩和恢复
+    private void StartCompressionEffect()
+    {
+        // 使用 DoTween 的 DOScale 来让SpriteRenderer在y轴上压缩和恢复
+        _spriteRenderer.transform.DOScaleY(scaleAmount, scaleDuration)
+            .SetEase(Ease.InOutSine)  // 使用Ease的缓动效果
+            .SetLoops(loopCount, LoopType.Yoyo);  // 无限循环，且每次反向播放
+    }
 
-        if (Input.GetKeyDown(KeyCode.O))
+    private void UpdatePlayerOrientation(Vector2 direction)
+    {
+        if (direction != Vector2.zero)
         {
-            DialogueSystem.ClueData[] clueDatas = DialogueSystem.Instance.LoadAllCluesFromJson();
-            foreach (var item in clueDatas)
+            // 向上的方向
+            if (direction.y > 0)
             {
-                Debug.Log(item.title);
+                _spriteRenderer.sprite = backSprite;
+                _spriteRenderer.flipX = direction.x < 0;
+            }
+            // 向下的方向
+            else if (direction.y < 0)
+            {
+                _spriteRenderer.sprite = frontSprite;
+                _spriteRenderer.flipX = direction.x < 0;
+            }
+            // 向左的方向
+            else if (direction.x < 0)
+            {
+                _spriteRenderer.sprite = sideSprite;
+                _spriteRenderer.flipX = false;
+            }
+            // 向右的方向
+            else if (direction.x > 0)
+            {
+                _spriteRenderer.sprite = sideSprite;
+                _spriteRenderer.flipX = true;
             }
         }
-
-        SenseNPC();
     }
 
     private void SenseNPC()

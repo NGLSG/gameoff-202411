@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +44,21 @@ public class NPC : MonoBehaviour
     [SerializeField] private string bodyPath;
     [SerializeField] private string hairPath;
     [SerializeField] private string armPath;
-    
+
+    [Header("NPC Move Anim")]
+    public Sprite frontSprite;
+
+    [Header("NPC Audio Setting")]
+    public AudioClip audioClip;
+    public float triggerRadius = 5f;  // 播放音效的触发半径
+    [SerializeField]private Transform playerTransform;  // 玩家位置
+    private AudioSource audioSource;  // 用于播放音效的 AudioSource
+
+    [Header("DO Tween Settings")]
+    public float scaleDuration = 0.5f;  // 缩放动画持续时间
+    public float scaleAmount = 0.14f;    // 压缩比例
+    public int loopCount = -1;          // -1表示无限循环
+
     // 检测半径
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private LayerMask playerLayer;
@@ -55,9 +70,13 @@ public class NPC : MonoBehaviour
     {
         // 初始化 NPC Speak
         npcSpeak.gameObject.SetActive(false);
-        
+
+        // 调用方法开始动画
+        StartCompressionEffect();
+
         // 初始化玩家配置
         GenerateNPCConfig();
+        audioSource = GetComponent<AudioSource>();
         npcNameText.text = npcName;
         isVisited = false;
     }
@@ -66,6 +85,42 @@ public class NPC : MonoBehaviour
     {
         // 在小圈内检测玩家是否靠近
         DetectPlayerInRadius();
+
+        // 计算玩家与 NPC 的距离
+        float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
+
+        // 当玩家距离 NPC 小于触发范围时播放音效
+        if (distanceToPlayer <= triggerRadius && !audioSource.isPlaying)
+        {
+            PlayNPCSound();
+        }
+        // 如果玩家离开了触发范围，则停止播放音效
+        else if (distanceToPlayer > triggerRadius && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+            Debug.Log("NPC Sound Stop");
+        }
+    }
+
+    void PlayNPCSound()
+    {
+        Debug.Log("NPC Sound Start");
+
+        // 确保音效只播放一次
+        if (audioClip != null)
+        {
+            audioSource.clip = audioClip;
+            audioSource.Play();
+        }
+    }
+
+    // 让sprite不断在y轴上轻微压缩和恢复
+    private void StartCompressionEffect()
+    {
+        // 使用 DoTween 的 DOScale 来让SpriteRenderer在y轴上压缩和恢复
+        npcHeadPhoto.transform.DOScaleY(scaleAmount, scaleDuration)
+            .SetEase(Ease.InOutSine)  // 使用Ease的缓动效果
+            .SetLoops(loopCount, LoopType.Yoyo);  // 无限循环，且每次反向播放
     }
 
     // 检测小圈内玩家
@@ -130,6 +185,8 @@ public class NPC : MonoBehaviour
                     bodyPath = "NPCArtAssets/Teacher/Female/Body";
                     armPath = "NPCArtAssets/Teacher/Female/Arm";
                     hairPath = "NPCArtAssets/Teacher/Female/Hair";
+
+                    frontSprite = Resources.Load<Sprite>("NPCArtAssets/Teacher/Female/Movement/正");
                 }
                 else
                 {
@@ -142,6 +199,8 @@ public class NPC : MonoBehaviour
                     bodyPath = "NPCArtAssets/Teacher/Male/Body";
                     armPath = "NPCArtAssets/Teacher/Male/Arm";
                     hairPath = "NPCArtAssets/Teacher/Male/Hair";
+
+                    frontSprite = Resources.Load<Sprite>("NPCArtAssets/Teacher/Male/Movement/正");
                 }
             }
             else
@@ -175,6 +234,8 @@ public class NPC : MonoBehaviour
             bodyPath = "NPCArtAssets/Student/Female/Body";
             armPath = "NPCArtAssets/Student/Female/Arm";
             hairPath = "NPCArtAssets/Student/Female/Hair";
+
+            frontSprite = Resources.Load<Sprite>("NPCArtAssets/Student/Female/Movement/正");
         }
         else
         {
@@ -187,12 +248,16 @@ public class NPC : MonoBehaviour
             bodyPath = "NPCArtAssets/Student/Male/Body";
             armPath = "NPCArtAssets/Student/Male/Arm";
             hairPath = "NPCArtAssets/Student/Male/Hair";
+
+            frontSprite = Resources.Load<Sprite>("NPCArtAssets/Student/Male/Movement/正");
         }
 
         // 随机选择资源
         body = bodyAssets[Random.Range(0, bodyAssets.Length)].name;
         arm = armAssets[Random.Range(0, armAssets.Length)].name;
         hair = hairAssets[Random.Range(0, hairAssets.Length)].name;
+
+        npcHeadPhoto.sprite = frontSprite;
     }
 
 

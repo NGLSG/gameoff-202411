@@ -223,6 +223,8 @@ public class NPC : MonoBehaviour
                 armPath = "NPCArtAssets/SpecialCharacter/Arm";
                 hairPath = "NPCArtAssets/SpecialCharacter/Hair";
                 
+                frontSprite = Resources.Load<Sprite>($"NPCArtAssets/SpecialCharacter/Movement/{npcName}");
+                npcHeadPhoto.sprite = frontSprite;
                 return;
             }
         }

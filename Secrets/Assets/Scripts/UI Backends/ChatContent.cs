@@ -27,7 +27,11 @@ public class ChatContent : MonoBehaviour
         if (NeedAnim)
             PlayShowAnim();
         else
-            preloadAnim.gameObject.SetActive(false);
+        {
+            if (preloadAnim != null)
+                preloadAnim.gameObject.SetActive(false);
+        }
+
         MaxRect = transform.parent.GetComponent<RectTransform>();
         handle = StartCoroutine(Handler());
     }

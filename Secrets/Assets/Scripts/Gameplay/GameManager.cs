@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
     public StateManager stateMechine;
     private GameData gameData;
 
-    private void Start()
+    private void Awake()
     {
         gameData = new GameData();
         stateMechine = new StateManager();
@@ -22,6 +22,11 @@ public class GameManager : Singleton<GameManager>
 
     public GameData GetGameData()
     {
+        if (gameData == null)
+        {
+            gameData = new GameData();
+        }
+
         return gameData;
     }
 

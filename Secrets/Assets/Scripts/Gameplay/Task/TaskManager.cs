@@ -17,6 +17,8 @@ public class TaskManager : Singleton<TaskManager>
             Finished
         }
 
+        public bool unlocked;
+
         public int TaskID;
         public State TaskState;
         public int OptionID;
@@ -47,9 +49,12 @@ public class TaskManager : Singleton<TaskManager>
         Utils.RemoveAllChildren(TaskParent.transform);
         foreach (var task in Tasks)
         {
-            var taskObj = Instantiate(TaskPrefab, TaskParent.transform);
-            taskObj.transform.parent = TaskParent.transform;
-            taskObj.GetComponentInChildren<Task>().SetTaskInfo(task);
+            if (task.unlocked || GameManager.Instance.GetGameData().GetExploreScore() == 60)
+            {
+                var taskObj = Instantiate(TaskPrefab, TaskParent.transform);
+                taskObj.transform.parent = TaskParent.transform;
+                taskObj.GetComponentInChildren<Task>().SetTaskInfo(task);
+            }
         }
     }
 
@@ -75,32 +80,20 @@ public class TaskManager : Singleton<TaskManager>
         TaskOptions.Clear();
         foreach (var taskInfo in taskInfos)
         {
-            if (taskInfo.Unlocked || GameManager.Instance.GetGameData().GetExploreScore() == 60)
-            {
-                if (taskInfo.DialogueInfos.Count == 0) continue;
-                TaskDialogues.Add(taskInfo.TaskID, taskInfo);
-                if (!isExist)
-                    Tasks.Add(new TaskInfo()
-                    {
-                        TaskID = taskInfo.TaskID,
-                        NPCID = taskInfo.NPCID
-                    });
-                foreach (var optInfos in taskOptionInfos)
+            if (taskInfo.DialogueInfos.Count == 0) continue;
+            TaskDialogues.Add(taskInfo.TaskID, taskInfo);
+            if (!isExist)
+                Tasks.Add(new TaskInfo()
                 {
-                    if (optInfos.TaskOptions.Count == 0) continue;
-                    int idx = 0;
-                    foreach (var optInfo in optInfos.TaskOptions)
-                    {
-                        if (!TaskOptions.ContainsKey(taskInfo.TaskID))
-                        {
-                            TaskOptions.Add(taskInfo.TaskID, new List<TaskOptionInfo>());
-                        }
+                    TaskID = taskInfo.TaskID,
+                    NPCID = taskInfo.NPCID,
+                    unlocked = taskInfo.Unlocked,
+                });
+        }
 
-                        TaskOptions[taskInfo.TaskID].Add(optInfo);
-                        idx++;
-                    }
-                }
-            }
+        foreach (var opts in taskOptionInfos)
+        {
+            TaskOptions[opts.TaskID] = opts.TaskOptions;
         }
     }
 

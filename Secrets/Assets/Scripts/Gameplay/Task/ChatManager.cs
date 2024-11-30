@@ -141,9 +141,11 @@ public class ChatManager : Singleton<ChatManager>
             go.GetComponentInChildren<ChatContent>().content.text = currentTaskOptionInfo.sContent;
             Input.text = "";
         }
+
         if (count == TaskOptions.Count)
         {
             Finished = true;
+            GameManager.Instance.stateMechine.SetState(nameof(GameFinishState));
         }
     }
 }

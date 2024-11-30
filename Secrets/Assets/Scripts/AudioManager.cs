@@ -13,6 +13,11 @@ public class AudioManager : Singleton<AudioManager>
         bgm.Play();
     }
 
+    public void StopPlaySoundEffect(int soundOnPlaying)
+    {
+        soundEffects[soundOnPlaying].Stop();
+    }
+
     public void PlaySoundEffect(int soundToPlay)
     {
         Debug.Log($"here in audio manager: {soundToPlay}");

@@ -85,6 +85,12 @@ public class PlayerController : Singleton<PlayerController>
             if (moveVector2 != Vector2.zero)
             {
                 MovePlayer(moveVector2);
+                // 播放走路音效
+                AudioManager.Instance.PlaySoundEffectWithoutShutDown(3);
+            }
+            else
+            {
+                AudioManager.Instance.StopPlaySoundEffect(3);
             }
 
 
@@ -98,9 +104,6 @@ public class PlayerController : Singleton<PlayerController>
         Vector2 currentPosition = _rigidbody2D.position;
         Vector2 newPosition = currentPosition + direction * PlayerAttributes.RunSpeed * Time.fixedDeltaTime;
         _rigidbody2D.MovePosition(newPosition);
-
-        // 播放走路音效
-        AudioManager.Instance.PlaySoundEffectWithoutShutDown(3);
 
         // 更新玩家的朝向和sprite
         UpdatePlayerOrientation(direction);

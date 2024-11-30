@@ -168,7 +168,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     // 重置NPC立绘
-    [YarnCommand("switch_character")]
+    [YarnCommand("change_character")]
     public void SwitchCharacterPaint(string characterName)
     {
         ApplyBodyConfig(characterName);

@@ -110,7 +110,7 @@ public class NPC : MonoBehaviour
         if (audioClip != null)
         {
             audioSource.clip = audioClip;
-            audioSource.Play();
+            //audioSource.Play();
         }
     }
 

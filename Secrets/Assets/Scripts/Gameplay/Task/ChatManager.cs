@@ -31,6 +31,8 @@ public class ChatManager : Singleton<ChatManager>
     [SerializeField] private TextMeshProUGUI NPC;
     [SerializeField] private TextMeshProUGUI Input;
     [SerializeField] private TaskOptionInfo currentTaskOptionInfo;
+    public bool Finished;
+    private int count = 0;
 
     public IEnumerator Refresh()
     {
@@ -131,11 +133,17 @@ public class ChatManager : Singleton<ChatManager>
                     break;
             }
 
+            count++;
+
             TaskManager.Instance.SetTaskState(TaskID, TaskManager.TaskInfo.State.Finished);
             TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).OptionID = currentTaskOptionInfo.OptID;
             var go = Instantiate(PlayerContentPrefab, ChatParent.transform);
             go.GetComponentInChildren<ChatContent>().content.text = currentTaskOptionInfo.sContent;
             Input.text = "";
+        }
+        if (count == TaskOptions.Count)
+        {
+            Finished = true;
         }
     }
 }

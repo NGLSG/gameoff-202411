@@ -71,7 +71,7 @@ public class ChatManager : Singleton<ChatManager>
         Utils.RemoveAllChildren(TaskParent.transform);
         foreach (var info in TaskOptionInfos)
         {
-            if (info.sUnlocked)
+            if (info.sUnlocked||GameManager.Instance.GetGameData().GetExploreScore()==60)
             {
                 var taskOption = Instantiate(TaskOptionPrefab, TaskParent.transform);
                 taskOption.transform.parent = TaskParent.transform;

@@ -27,5 +27,6 @@ public class DialogueStorageInfo
 {
     public int TaskID;
     public string NPCID;
+    public bool Unlocked;
     public List<DialogueInfo> DialogueInfos = new List<DialogueInfo>();
 }

@@ -75,27 +75,30 @@ public class TaskManager : Singleton<TaskManager>
         TaskOptions.Clear();
         foreach (var taskInfo in taskInfos)
         {
-            if (taskInfo.DialogueInfos.Count == 0) continue;
-            TaskDialogues.Add(taskInfo.TaskID, taskInfo);
-            if (!isExist)
-                Tasks.Add(new TaskInfo()
-                {
-                    TaskID = taskInfo.TaskID,
-                    NPCID = taskInfo.NPCID
-                });
-            foreach (var optInfos in taskOptionInfos)
+            if (taskInfo.Unlocked || GameManager.Instance.GetGameData().GetExploreScore() == 60)
             {
-                if (optInfos.TaskOptions.Count == 0) continue;
-                int idx = 0;
-                foreach (var optInfo in optInfos.TaskOptions)
-                {
-                    if (!TaskOptions.ContainsKey(taskInfo.TaskID))
+                if (taskInfo.DialogueInfos.Count == 0) continue;
+                TaskDialogues.Add(taskInfo.TaskID, taskInfo);
+                if (!isExist)
+                    Tasks.Add(new TaskInfo()
                     {
-                        TaskOptions.Add(taskInfo.TaskID, new List<TaskOptionInfo>());
-                    }
+                        TaskID = taskInfo.TaskID,
+                        NPCID = taskInfo.NPCID
+                    });
+                foreach (var optInfos in taskOptionInfos)
+                {
+                    if (optInfos.TaskOptions.Count == 0) continue;
+                    int idx = 0;
+                    foreach (var optInfo in optInfos.TaskOptions)
+                    {
+                        if (!TaskOptions.ContainsKey(taskInfo.TaskID))
+                        {
+                            TaskOptions.Add(taskInfo.TaskID, new List<TaskOptionInfo>());
+                        }
 
-                    TaskOptions[taskInfo.TaskID].Add(optInfo);
-                    idx++;
+                        TaskOptions[taskInfo.TaskID].Add(optInfo);
+                        idx++;
+                    }
                 }
             }
         }

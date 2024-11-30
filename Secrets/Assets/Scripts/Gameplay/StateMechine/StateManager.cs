@@ -12,6 +12,7 @@ public class StateManager
     {
         states = new List<BaseState>();
         states.Add(new GameInitState(this));
+        states.Add(new GameRuntimeState(this));
         states.Add(new GameFinishState(this));
         
         currentState = states[0];
@@ -46,5 +47,25 @@ public class StateManager
     public string GetCurState()
     {
         return currentState.ToString();
+    }
+    
+    public void SwitchToNextState()
+    {
+        string currentState = GetCurState();
+        int nextStateIndex;
+        
+        for (int i = 0; i < states.Count; i++)
+        {
+            if (states[i].ToString() == currentState)
+            {
+                if (i + 1 >= states.Count) nextStateIndex = 0;
+                else
+                {
+                    nextStateIndex = i + 1;
+                }
+                SetState(states[nextStateIndex].ToString());
+                break;
+            }
+        }
     }
 }

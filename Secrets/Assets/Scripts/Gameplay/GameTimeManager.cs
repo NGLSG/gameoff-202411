@@ -135,4 +135,9 @@ public class GameTimeManager : Singleton<GameTimeManager>
             }
         }
     }
+    
+    public bool IsCurrentTimeGreaterThan(FactualTime targetTime)
+    {
+        return currentFactualTime > targetTime;
+    }
 }

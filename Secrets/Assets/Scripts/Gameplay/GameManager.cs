@@ -14,10 +14,16 @@ public class GameManager : Singleton<GameManager>
         gameData = new GameData();
         stateMechine = new StateManager();
         stateMechine.SetState("GameInitState");
+        
         if (Directory.Exists(Path.Combine(Application.persistentDataPath, "Resources/Clues")))
         {
             Directory.Delete(Path.Combine(Application.persistentDataPath, "Resources/Clues"), true);
         }
+    }
+
+    private void Start()
+    {
+        stateMechine.SwitchToNextState();
     }
 
     public GameData GetGameData()

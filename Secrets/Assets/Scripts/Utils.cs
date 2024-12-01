@@ -23,6 +23,7 @@ public static class Utils
     public static void LoadScene(string sceneName)
     {
         LoadingManager.SceneName = sceneName;
+        Time.timeScale = 1;
         SceneManager.LoadScene("LoadingScreen");
     }
 

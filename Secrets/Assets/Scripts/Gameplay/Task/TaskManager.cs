@@ -99,6 +99,7 @@ public class TaskManager : Singleton<TaskManager>
 
     public void UnlockOption(int optionID)
     {
+        Debug.Log($"<color=green> Try Unlock task Option {optionID}</color>");
         foreach (var v1 in TaskOptions.Values)
             if (v1.Any(info => info.OptID == optionID))
             {

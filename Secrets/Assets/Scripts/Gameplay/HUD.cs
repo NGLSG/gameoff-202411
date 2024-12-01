@@ -9,9 +9,9 @@ public class HUD : Singleton<HUD>
     [SerializeField] private UISlider personalV;
     [SerializeField] private UISlider normalV;
 
-    [SerializeField] private int exploreValueMax;
-    [SerializeField] private int personalValueMax;
-    [SerializeField] private int normalValueMax;
+    [SerializeField] public int exploreValueMax;
+    [SerializeField] public int personalValueMax;
+    [SerializeField] public int normalValueMax;
    public void SetExploreValue(int value)
     {
         exploreV.SetRate((float)value/exploreValueMax);

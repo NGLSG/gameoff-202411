@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using UnityEngine.Events;
 using UnityEngine.InputSystem; // Import DOTween namespace
 
 public class UIEffectHandler : MonoBehaviour
@@ -15,6 +16,7 @@ public class UIEffectHandler : MonoBehaviour
     [SerializeField] private Ease ShrinkEase = Ease.InBack;
     [SerializeField] private bool CloseOnClickOutside = true;
     [SerializeField] private bool AlawaysShow = false;
+    [SerializeField] private UnityEvent OnShow;
 
     private Coroutine handle;
 
@@ -88,6 +90,8 @@ public class UIEffectHandler : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+        if (OnShow != null)
+            OnShow.Invoke();
         if (GameUIManager.Instance != null)
             GameUIManager.Instance.TogglePause(true);
         transform.DOScale(ShowTargetScale, showDuration).SetEase(ShowEase).SetUpdate(true);

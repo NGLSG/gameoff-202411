@@ -21,7 +21,7 @@ public class TaskManager : Singleton<TaskManager>
 
         public int TaskID;
         public State TaskState;
-        public int OptionID;
+        public int OptionID = -1;
         public string NPCID;
     }
 
@@ -36,7 +36,7 @@ public class TaskManager : Singleton<TaskManager>
     public List<TaskInfo> Tasks = new List<TaskInfo>();
     [SerializeField] private GameObject TaskParent;
 
-    private void OnEnable()
+    public void OnShhow()
     {
         if (!initialized)
         {
@@ -49,13 +49,17 @@ public class TaskManager : Singleton<TaskManager>
         Utils.RemoveAllChildren(TaskParent.transform);
         foreach (var task in Tasks)
         {
-            if (task.unlocked || GameManager.Instance.GetGameData().GetExploreScore() == 60)
+            if (task.unlocked || GameManager.Instance.GetGameData().GetExploreScore() == HUD.Instance.exploreValueMax)
             {
                 var taskObj = Instantiate(TaskPrefab, TaskParent.transform);
                 taskObj.transform.parent = TaskParent.transform;
                 taskObj.GetComponentInChildren<Task>().SetTaskInfo(task);
             }
         }
+    }
+    private void OnEnable()
+    {
+
     }
 
     private void SaveTempJson()
@@ -100,12 +104,20 @@ public class TaskManager : Singleton<TaskManager>
     public void UnlockOption(int optionID)
     {
         Debug.Log($"<color=green> Try Unlock task Option {optionID}</color>");
+        int idx = 0;
+
         foreach (var v1 in TaskOptions.Values)
+        {
             if (v1.Any(info => info.OptID == optionID))
             {
                 var opt = v1.FirstOrDefault(info => info.OptID == optionID);
                 opt.sUnlocked = true;
+                TaskOptions[idx][optionID % 100 - 1] = opt;
+                break;
             }
+
+            idx++;
+        }
     }
 
 

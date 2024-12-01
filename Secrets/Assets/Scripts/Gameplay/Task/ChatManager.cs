@@ -34,6 +34,21 @@ public class ChatManager : Singleton<ChatManager>
     public bool Finished;
     private int count = 0;
 
+    [ContextMenu("UnlockAll")]
+    public void UnlockAll()
+    {
+        GameManager.Instance.GetGameData().ChangeExploreScore(HUD.Instance.exploreValueMax);
+        foreach (var v1 in TaskManager.Instance.TaskOptions.Values)
+        {
+            for (int i = 0; i < v1.Count; i++)
+            {
+                var v = v1[i];
+                v.sUnlocked = true;
+                v1[i] = v;
+            }
+        }
+    }
+
     public IEnumerator Refresh()
     {
         if (TaskState == TaskManager.TaskInfo.State.Finished)
@@ -71,15 +86,17 @@ public class ChatManager : Singleton<ChatManager>
 
         TaskParent.transform.parent.gameObject.SetActive(true);
         Utils.RemoveAllChildren(TaskParent.transform);
-        foreach (var info in TaskOptionInfos)
-        {
-            if (info.sUnlocked || GameManager.Instance.GetGameData().GetExploreScore() == 60)
+        if (TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).OptionID == -1)
+            foreach (var info in TaskOptionInfos)
             {
-                var taskOption = Instantiate(TaskOptionPrefab, TaskParent.transform);
-                taskOption.transform.parent = TaskParent.transform;
-                taskOption.GetComponentInChildren<TaskOption>().SetTaskOptionInfo(info);
+                if (info.sUnlocked ||
+                    GameManager.Instance.GetGameData().GetExploreScore() == HUD.Instance.exploreValueMax)
+                {
+                    var taskOption = Instantiate(TaskOptionPrefab, TaskParent.transform);
+                    taskOption.transform.parent = TaskParent.transform;
+                    taskOption.GetComponentInChildren<TaskOption>().SetTaskOptionInfo(info);
+                }
             }
-        }
 
         yield break;
     }
@@ -95,7 +112,8 @@ public class ChatManager : Singleton<ChatManager>
         var tasks = TaskManager.Instance.TaskDialogues[TaskID];
         Utils.RemoveAllChildren(ChatParent.transform);
         DialogueInfos = tasks.DialogueInfos;
-        TaskOptionInfos = TaskManager.Instance.TaskOptions[TaskID];
+        if (TaskManager.Instance.TaskOptions.ContainsKey(TaskID))
+            TaskOptionInfos = TaskManager.Instance.TaskOptions[TaskID];
         NPC.text = TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).NPCID;
 
         TaskState = TaskManager.Instance.GetTaskState(TaskID);
@@ -106,6 +124,7 @@ public class ChatManager : Singleton<ChatManager>
     public void SelectTaskOption(TaskOptionInfo taskOptionInfo)
     {
         currentTaskOptionInfo = taskOptionInfo;
+        TaskManager.Instance.Tasks.First(x => x.TaskID == TaskID).OptionID = taskOptionInfo.OptID;
         Input.text = taskOptionInfo.sContent;
     }
 
@@ -131,6 +150,8 @@ public class ChatManager : Singleton<ChatManager>
                 case TaskOptionInfo.OptionType.TrueEnding:
                     GameManager.Instance.GetGameData().SetTrueEnding(true);
                     break;
+                default:
+                    break;
             }
 
             count++;
@@ -142,7 +163,7 @@ public class ChatManager : Singleton<ChatManager>
             Input.text = "";
         }
 
-        if (count == TaskOptions.Count)
+        if (count == TaskManager.Instance.Tasks.Count)
         {
             Finished = true;
             GameManager.Instance.stateMechine.SetState(nameof(GameFinishState));

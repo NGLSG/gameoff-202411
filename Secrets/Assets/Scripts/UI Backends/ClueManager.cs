@@ -32,5 +32,7 @@ public class ClueManager : Singleton<ClueManager>
             var go = Instantiate(CluePrefab, ClueParent.transform);
             go.GetComponentInChildren<ChatContent>().content.text = Utils.StringCombine(cc.Speaker, ": ", cc.Text);
         }
+        var goes = Instantiate(CluePrefab, ClueParent.transform);
+        goes.GetComponentInChildren<ChatContent>().content.text = Utils.StringCombine("");
     }
 }

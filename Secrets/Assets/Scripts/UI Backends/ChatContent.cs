@@ -74,9 +74,9 @@ public class ChatContent : MonoBehaviour
             Background.rectTransform.sizeDelta =
                 new Vector2(
                     Math.Min(content.preferredWidth + 10, MaxRect.rect.width - 32),
-                    content.preferredHeight + 20);
+                    content.preferredHeight + 30);
             var maxHeight = MaxRect.sizeDelta;
-            maxHeight.y = content.preferredHeight + 20;
+            maxHeight.y = content.preferredHeight + 30;
             MaxRect.sizeDelta = maxHeight;
             yield return new WaitForEndOfFrame();
         }
